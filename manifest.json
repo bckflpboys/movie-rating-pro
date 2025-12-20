@@ -5,8 +5,7 @@
     "description": "Rate movies by segments and categories with detailed scoring",
     "permissions": [
         "storage",
-        "activeTab",
-        "scripting"
+        "activeTab"
     ],
     "content_scripts": [
         {
