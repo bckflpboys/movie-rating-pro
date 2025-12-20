@@ -1,196 +1,183 @@
 # Movie Rating Pro - Chrome Extension
 
-A beautiful and comprehensive Chrome extension for rating movies across different time segments and production categories.
+A powerful Chrome extension that allows you to rate movies and videos with detailed scoring across multiple categories. Features automatic movie title detection from streaming platforms and video websites.
 
 ## Features
 
+### 🎬 Automatic Movie Title Detection
+The extension automatically detects the movie or video title from the current webpage when you open the popup. This works across:
+
+- **Streaming Platforms:**
+  - Netflix
+  - Amazon Prime Video
+  - Disney+
+  - Hulu
+  - HBO Max / Max
+  - Apple TV+
+  
+- **Video Platforms:**
+  - YouTube
+  - Vimeo
+  - Dailymotion
+  - Twitch
+
+- **Generic Detection:**
+  - Works on any website with video content
+  - Uses multiple detection strategies including:
+    - Platform-specific selectors
+    - Open Graph meta tags
+    - Twitter card meta tags
+    - Common video title patterns
+    - Document title analysis
+
 ### 📊 Comprehensive Rating System
-- **Time Segments**: Rate the first 30 minutes, middle hour, and last 30 minutes separately
-- **Production Quality**: Evaluate sound design, music score, and visual quality
-- **Creative Aspects**: Rate directing, acting, screenplay, and cinematography
-- **1-10 Scale**: Each category uses an intuitive 1-10 rating scale
+Rate movies across 10 different categories:
 
-### ⭐ Smart Scoring
-- Automatic calculation of overall movie score
+**Time Segments:**
+- First 30 Minutes
+- Middle Hour
+- Last 30 Minutes
+
+**Production Quality:**
+- Sound Design
+- Music Score
+- Visual Quality
+
+**Creative Aspects:**
+- Directing
+- Acting
+- Screenplay
+- Cinematography
+
+### ⭐ Features
+- Real-time score calculation (out of 10)
 - Visual star rating display (out of 5 stars)
-- Real-time score updates as you adjust ratings
-
-### 💾 Local Storage
-- Save unlimited movie ratings
-- View all your saved ratings in a beautiful list
+- Save ratings locally in Chrome storage
+- View all your saved ratings
 - Delete ratings you no longer need
-- All data stored locally in your browser
+- Beautiful gradient UI with smooth animations
+- Manual refresh button to re-detect titles
 
-### 🎨 Premium Design
-- Modern dark theme with vibrant gradients
-- Smooth animations and transitions
-- Responsive and intuitive interface
-- Color-coded rating sliders
+## Installation
 
-## Installation Instructions
+1. Clone or download this repository
+2. Open Chrome and navigate to `chrome://extensions/`
+3. Enable "Developer mode" in the top right
+4. Click "Load unpacked"
+5. Select the extension directory
 
-### Method 1: Load Unpacked Extension (Developer Mode)
+## Usage
 
-1. **Open Chrome Extensions Page**
-   - Open Google Chrome
-   - Navigate to `chrome://extensions/`
-   - Or click the three dots menu → More Tools → Extensions
+### Automatic Title Detection
 
-2. **Enable Developer Mode**
-   - Toggle the "Developer mode" switch in the top-right corner
-
-3. **Load the Extension**
-   - Click "Load unpacked" button
-   - Navigate to the folder: `e:\web\chrome extentions\movie list`
-   - Select the folder and click "Select Folder"
-
-4. **Start Using**
-   - The extension icon should appear in your Chrome toolbar
-   - Click the icon to open the rating interface
-   - Start rating your favorite movies!
-
-### Method 2: Pin the Extension (Recommended)
-
-After loading the extension:
-1. Click the puzzle piece icon in Chrome toolbar
-2. Find "Movie Rating Pro" in the list
-3. Click the pin icon to keep it visible in your toolbar
-
-## How to Use
+1. Navigate to any streaming platform or video website
+2. Start watching a movie or video
+3. Click the extension icon in your browser toolbar
+4. The movie title will be automatically detected and filled in
+5. If the title isn't detected or is incorrect, you can:
+   - Click the refresh button (↻) to try detecting again
+   - Manually type in the correct title
 
 ### Rating a Movie
 
-1. **Enter Movie Title**
-   - Click the extension icon
-   - Type the movie name in the title field
-
-2. **Rate Time Segments**
-   - First 30 Minutes: Rate the opening and setup
-   - Middle Hour: Rate the main story development
-   - Last 30 Minutes: Rate the climax and conclusion
-
-3. **Rate Production Quality**
-   - Sound Design: Audio effects and sound mixing
-   - Music Score: Original soundtrack and music
-   - Visual Quality: Cinematography and visual effects
-
-4. **Rate Creative Aspects**
-   - Directing: Director's vision and execution
-   - Acting: Performance quality
-   - Screenplay: Story and dialogue
-   - Cinematography: Camera work and framing
-
-5. **Save Your Rating**
-   - Watch the overall score update in real-time
-   - Click "Save Rating" to store your review
-   - Click "Reset" to start over
+1. Adjust the sliders for each category (1-10 scale)
+2. Watch the overall score update in real-time
+3. Click "Save Rating" to store your rating
+4. The form will reset automatically after saving
 
 ### Viewing Saved Ratings
 
-1. Click the menu icon (three lines) in the top-right
-2. Browse all your saved movie ratings
-3. See scores, dates, and key metrics at a glance
-4. Delete ratings by clicking the "Delete Rating" button
+1. Click the menu icon (≡) in the top right of the popup
+2. Browse through your saved ratings
+3. Each rating shows:
+   - Movie title
+   - Date rated
+   - Overall score
+   - Star rating
+   - Top 4 category scores
+4. Click "Delete Rating" to remove a rating
+5. Click "Back" to return to the rating form
+
+## How Title Detection Works
+
+The extension uses a content script that runs on all web pages. When you open the popup, it:
+
+1. **Checks the current website** - Identifies if you're on a known streaming platform
+2. **Uses platform-specific detection** - Applies optimized selectors for popular platforms
+3. **Falls back to generic detection** - Uses multiple strategies for unknown websites:
+   - Searches for video elements and nearby titles
+   - Checks meta tags (Open Graph, Twitter Cards)
+   - Looks for common title class names and patterns
+   - Analyzes the page title
+4. **Cleans the title** - Removes platform names, "Watch" prefixes, and other noise
+5. **Auto-fills the input** - Populates the movie title field with a subtle animation
+
+### Manual Refresh
+
+If the automatic detection doesn't work or you navigate to a different video:
+- Click the refresh button (↻) next to the title input
+- The extension will re-scan the page for the current title
+- This will overwrite any existing title in the field
 
 ## Technical Details
 
-- **Manifest Version**: 3 (Latest Chrome Extension standard)
-- **Permissions**: Local storage only (no network access)
-- **Storage**: Chrome's local storage API
-- **Size**: Lightweight (~50KB)
-- **Privacy**: All data stays on your device
+### Permissions
 
-## File Structure
+- `storage` - Save ratings locally
+- `activeTab` - Access the current tab to detect titles
+- `scripting` - Inject content script for title detection
 
-```
-movie list/
-├── manifest.json       # Extension configuration
-├── popup.html         # Main interface
-├── popup.js           # Application logic
-├── styles.css         # Styling and animations
-├── icons/             # Extension icons
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-└── README.md          # This file
-```
+### Files
 
-## Rating Categories Explained
+- `manifest.json` - Extension configuration
+- `popup.html` - Main popup interface
+- `popup.js` - Popup logic and Chrome API interactions
+- `content.js` - Content script for title detection
+- `styles.css` - Beautiful gradient UI styles
+- `icons/` - Extension icons
 
-### Time Segments
-- **First 30 Minutes**: How well does the movie hook you? Is the setup engaging?
-- **Middle Hour**: Does the story maintain momentum? Is the development satisfying?
-- **Last 30 Minutes**: Is the payoff worth it? Does it stick the landing?
+### Storage
 
-### Production Quality
-- **Sound Design**: Ambient sounds, effects, mixing quality
-- **Music Score**: Original music, soundtrack choices, emotional impact
-- **Visual Quality**: Image quality, color grading, visual effects
+Ratings are stored locally using Chrome's `storage.local` API. Each rating includes:
+- Unique ID (timestamp)
+- Movie title
+- All 10 category ratings
+- Calculated total score
+- Date and timestamp
 
-### Creative Aspects
-- **Directing**: Vision, pacing, shot composition
-- **Acting**: Performance quality, chemistry, believability
-- **Screenplay**: Story structure, dialogue, character development
-- **Cinematography**: Camera work, lighting, visual storytelling
+## Privacy
 
-## Tips for Better Ratings
+- All data is stored locally on your device
+- No data is sent to external servers
+- No tracking or analytics
+- No account required
 
-1. **Be Honest**: Rate based on your genuine experience
-2. **Consider Context**: Genre expectations matter
-3. **Rate Immediately**: Fresh impressions are most accurate
-4. **Use Full Scale**: Don't be afraid to use 1s and 10s
-5. **Take Notes**: The title field helps you remember which movie
+## Browser Compatibility
 
-## Troubleshooting
+- Chrome (Manifest V3)
+- Edge (Chromium-based)
+- Other Chromium-based browsers
 
-### Extension Not Loading?
-- Make sure Developer Mode is enabled
-- Check that all files are in the correct folder
-- Try removing and re-adding the extension
+## Future Enhancements
 
-### Ratings Not Saving?
-- Check Chrome's storage permissions
-- Ensure you've entered a movie title
-- Try reloading the extension
-
-### Visual Issues?
-- Make sure you're using a recent version of Chrome
-- Try zooming in/out (Ctrl + / Ctrl -)
-- Check if hardware acceleration is enabled
-
-## Future Enhancements (Potential)
-
+Potential features for future versions:
 - Export ratings to CSV/JSON
-- Import ratings from other sources
-- Advanced filtering and sorting
-- Rating statistics and insights
-- Comparison between movies
+- Import ratings from files
+- Search and filter saved ratings
+- Sort ratings by score, date, or title
+- Integration with movie databases (IMDB, TMDB)
+- Sync ratings across devices
 - Custom rating categories
-- Dark/Light theme toggle
+- Notes and comments for each rating
 
-## Privacy & Data
+## Contributing
 
-- **No Internet Connection Required**: Works completely offline
-- **No Data Collection**: We don't collect any user data
-- **Local Storage Only**: All ratings stay on your device
-- **No Tracking**: No analytics or tracking scripts
-- **Open Source**: Code is transparent and auditable
+Feel free to submit issues and enhancement requests!
 
-## Support
+## License
 
-If you encounter any issues or have suggestions:
-1. Check the troubleshooting section above
-2. Review the file structure to ensure all files are present
-3. Make sure you're using the latest version of Chrome
-
-## Credits
-
-Created with ❤️ for movie enthusiasts who want to track and remember their viewing experiences.
+MIT License - feel free to use and modify as needed.
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: December 2025  
-**License**: Personal Use
-
-Enjoy rating your movies! 🎬⭐
+**Enjoy rating your movies! 🎬⭐**
