@@ -98,6 +98,9 @@ function setupEventListeners() {
   // Back button
   document.getElementById('backBtn').addEventListener('click', showRatingForm);
 
+  // Back to list button (from detail view)
+  document.getElementById('backToListBtn').addEventListener('click', showSavedRatings);
+
   // Refresh title button
   document.getElementById('refreshTitleBtn').addEventListener('click', () => {
     const btn = document.getElementById('refreshTitleBtn');
@@ -262,6 +265,20 @@ async function loadSavedRatings() {
 
     ratingsList.innerHTML = movieRatings.map(rating => createRatingCard(rating)).join('');
 
+    // Add click event listeners to rating cards
+    document.querySelectorAll('.rating-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Don't trigger if clicking delete button
+        if (e.target.closest('.delete-btn')) return;
+
+        const ratingId = parseInt(card.dataset.id);
+        const rating = movieRatings.find(r => r.id === ratingId);
+        if (rating) {
+          showRatingDetail(rating);
+        }
+      });
+    });
+
     // Add delete button event listeners
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -296,7 +313,7 @@ function createRatingCard(rating) {
   ];
 
   return `
-    <div class="rating-card">
+    <div class="rating-card" data-id="${rating.id}">
       <div class="rating-card-header">
         <div>
           <div class="rating-card-title">${escapeHtml(rating.movieTitle)}</div>
@@ -397,6 +414,138 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+// Show detailed rating view
+function showRatingDetail(rating) {
+  // Hide saved ratings list
+  document.getElementById('savedRatings').classList.add('hidden');
+
+  // Show detail view
+  const detailView = document.getElementById('ratingDetailView');
+  detailView.classList.remove('hidden');
+
+  // Format date
+  const date = new Date(rating.date);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  // Generate stars HTML
+  const stars = generateStarsHTML(rating.totalScore);
+
+  // Category labels mapping
+  const categoryLabels = {
+    first30: 'First 30 Minutes',
+    middleHour: 'Middle Hour',
+    last30: 'Last 30 Minutes',
+    sound: 'Sound Design',
+    music: 'Music Score',
+    quality: 'Visual Quality',
+    directing: 'Directing',
+    acting: 'Acting',
+    screenplay: 'Screenplay',
+    cinematography: 'Cinematography'
+  };
+
+  // Group categories
+  const timeSegments = ['first30', 'middleHour', 'last30'];
+  const productionQuality = ['sound', 'music', 'quality'];
+  const creativeAspects = ['directing', 'acting', 'screenplay', 'cinematography'];
+
+  // Create detail HTML
+  const detailContent = document.getElementById('ratingDetailContent');
+  detailContent.innerHTML = `
+    <div class="detail-header">
+      <h2 class="detail-title">${escapeHtml(rating.movieTitle)}</h2>
+      <p class="detail-date">${formattedDate}</p>
+    </div>
+    
+    <div class="detail-score-card">
+      <div class="detail-stars">${stars}</div>
+      <div class="detail-score-number">${rating.totalScore}</div>
+      <div class="detail-score-label">out of 10</div>
+    </div>
+    
+    <div class="detail-section">
+      <h3 class="detail-section-title">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" />
+          <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Time Segments
+      </h3>
+      <div class="detail-ratings">
+        ${timeSegments.map(cat => `
+          <div class="detail-rating-item">
+            <div class="detail-rating-label">${categoryLabels[cat]}</div>
+            <div class="detail-rating-bar-container">
+              <div class="detail-rating-bar" style="width: ${rating.ratings[cat] * 10}%"></div>
+            </div>
+            <div class="detail-rating-value">${rating.ratings[cat]}/10</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <h3 class="detail-section-title">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+          <path d="M18 8L20 6V14L18 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Production Quality
+      </h3>
+      <div class="detail-ratings">
+        ${productionQuality.map(cat => `
+          <div class="detail-rating-item">
+            <div class="detail-rating-label">${categoryLabels[cat]}</div>
+            <div class="detail-rating-bar-container">
+              <div class="detail-rating-bar" style="width: ${rating.ratings[cat] * 10}%"></div>
+            </div>
+            <div class="detail-rating-value">${rating.ratings[cat]}/10</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <h3 class="detail-section-title">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+        </svg>
+        Creative Aspects
+      </h3>
+      <div class="detail-ratings">
+        ${creativeAspects.map(cat => `
+          <div class="detail-rating-item">
+            <div class="detail-rating-label">${categoryLabels[cat]}</div>
+            <div class="detail-rating-bar-container">
+              <div class="detail-rating-bar" style="width: ${rating.ratings[cat] * 10}%"></div>
+            </div>
+            <div class="detail-rating-value">${rating.ratings[cat]}/10</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    
+    <div class="detail-actions">
+      <button class="btn btn-secondary detail-delete-btn" data-id="${rating.id}">Delete Rating</button>
+    </div>
+  `;
+
+  // Add delete button event listener
+  const deleteBtn = detailContent.querySelector('.detail-delete-btn');
+  deleteBtn.addEventListener('click', () => {
+    if (confirm(`Are you sure you want to delete the rating for "${rating.movieTitle}"?`)) {
+      deleteRating(rating.id);
+      showSavedRatings(); // Go back to list after deleting
+    }
+  });
 }
 
 // Add CSS animations

@@ -206,47 +206,5 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="btn btn-secondary" id="resetBtn">Reset</button>
-          <button class="btn btn-primary" id="saveBtn">Save Rating</button>
-        </div>
-      </div>
-
-      <!-- Saved Ratings View -->
-      <div class="saved-ratings hidden" id="savedRatings">
-        <div class="saved-header">
-          <button class="back-btn" id="backBtn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            Back
-          </button>
-          <h2>Saved Ratings</h2>
-        </div>
-        <div class="ratings-list" id="ratingsList">
-          <!-- Ratings will be dynamically inserted here -->
-        </div>
-      </div>
-
-      <!-- Rating Detail View -->
-      <div class="rating-detail-view hidden" id="ratingDetailView">
-        <div class="saved-header">
-          <button class="back-btn" id="backToListBtn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            Back to List
-          </button>
-        </div>
-        <div id="ratingDetailContent">
-          <!-- Detail content will be dynamically inserted here -->
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script src="popup.js"></script>
-</body>
 
 </html>
