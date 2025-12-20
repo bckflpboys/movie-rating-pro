@@ -40,6 +40,8 @@ async function autoFillMovieTitle(force = false) {
 
       if (response && response.title) {
         const movieTitleInput = document.getElementById('movieTitle');
+        const dateWatchedInput = document.getElementById('dateWatched');
+
         // Only fill if empty or if forced (manual refresh)
         if (movieTitleInput && (!movieTitleInput.value || force)) {
           movieTitleInput.value = response.title;
@@ -51,6 +53,28 @@ async function autoFillMovieTitle(force = false) {
           }, 1000);
 
           console.log('Auto-filled movie title:', response.title);
+        }
+
+        // Auto-fill date watched with current date and time
+        if (dateWatchedInput && (!dateWatchedInput.value || force)) {
+          const now = new Date();
+          // Format for datetime-local input: YYYY-MM-DDTHH:MM
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          const hours = String(now.getHours()).padStart(2, '0');
+          const minutes = String(now.getMinutes()).padStart(2, '0');
+          const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+          dateWatchedInput.value = formattedDateTime;
+
+          // Add a subtle animation to show the date was auto-filled
+          dateWatchedInput.style.backgroundColor = '#10B98120';
+          setTimeout(() => {
+            dateWatchedInput.style.backgroundColor = '';
+          }, 1000);
+
+          console.log('Auto-filled date watched:', formattedDateTime);
         }
       } else if (force) {
         showNotification('Could not detect movie title on this page', 'error');
@@ -161,6 +185,7 @@ function updateStarsDisplay(score) {
 // Save rating to Chrome storage
 async function saveRating() {
   const movieTitle = document.getElementById('movieTitle').value.trim();
+  const dateWatched = document.getElementById('dateWatched').value;
 
   if (!movieTitle) {
     showNotification('Please enter a movie title', 'error');
@@ -187,7 +212,8 @@ async function saveRating() {
     movieTitle,
     ratings,
     totalScore: parseFloat(average.toFixed(1)),
-    date: new Date().toISOString(),
+    date: dateWatched ? new Date(dateWatched).toISOString() : new Date().toISOString(),
+    dateWatched: dateWatched || null,
     timestamp: Date.now()
   };
 
@@ -215,6 +241,7 @@ async function saveRating() {
 // Reset form to default values
 function resetForm() {
   document.getElementById('movieTitle').value = '';
+  document.getElementById('dateWatched').value = '';
 
   ratingCategories.forEach(category => {
     const slider = document.getElementById(category);
@@ -299,7 +326,9 @@ function createRatingCard(rating) {
   const formattedDate = date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   });
 
   const stars = generateStarsHTML(rating.totalScore);
