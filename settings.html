@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Rating Pro - Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .settings-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .settings-section h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-section p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 16px 0;
+            font-size: 14px;
+        }
+
+        .field-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .field-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .field-item input[type="text"] {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .field-item input[type="text"]:focus {
+            outline: none;
+            border-color: #8B5CF6;
+        }
+
+        .field-item select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .field-item select:focus {
+            outline: none;
+            border-color: #8B5CF6;
+        }
+
+        .field-item .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .field-item .toggle-switch.active {
+            background: #8B5CF6;
+        }
+
+        .field-item .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .field-item .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
+        .field-item .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #EF4444;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .field-item .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .add-field-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px dashed rgba(139, 92, 246, 0.5);
+            border-radius: 8px;
+            color: #8B5CF6;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-field-btn:hover {
+            background: rgba(139, 92, 246, 0.3);
+            border-color: #8B5CF6;
+        }
+
+        .save-settings-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .save-settings-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+        }
+
+        .back-to-popup {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 16px;
+            transition: color 0.2s;
+        }
+
+        .back-to-popup:hover {
+            color: #8B5CF6;
+        }
+
+        .field-label {
+            min-width: 100px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .default-badge {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8B5CF6;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="settings-container">
+        <a href="popup.html" class="back-to-popup">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            Back to Rating Form
+        </a>
+
+        <div class="settings-header">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="url(#gradient)" />
+                <path d="M16 8L18.5 13.5L24 14.5L20 18.5L21 24L16 21.5L11 24L12 18.5L8 14.5L13.5 13.5L16 8Z"
+                    fill="white" />
+                <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                        <stop offset="0%" stop-color="#8B5CF6" />
+                        <stop offset="100%" stop-color="#EC4899" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <h1>Settings</h1>
+        </div>
+
+        <!-- Default Fields Section -->
+        <div class="settings-section">
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2" />
+                    <path d="M7 10L9 12L13 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                Default Fields
+            </h2>
+            <p>Enable or disable default fields that appear in the rating form.</p>
+            <div class="field-list" id="defaultFieldsList">
+                <!-- Default fields will be populated here -->
+            </div>
+        </div>
+
+        <!-- Custom Fields Section -->
+        <div class="settings-section">
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                Custom Fields
+            </h2>
+            <p>Add your own custom fields to track additional information about movies.</p>
+            <div class="field-list" id="customFieldsList">
+                <!-- Custom fields will be populated here -->
+            </div>
+            <button class="add-field-btn" id="addCustomFieldBtn">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                Add Custom Field
+            </button>
+        </div>
+
+        <!-- Save Button -->
+        <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
+    </div>
+
+    <script src="settings.js"></script>
+</body>
+
+</html>

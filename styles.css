@@ -63,15 +63,18 @@ body {
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
   padding: var(--spacing-md);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(10px);
+  gap: var(--spacing-md);
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
   align-items: center;
 }
 

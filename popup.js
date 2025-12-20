@@ -116,6 +116,11 @@ function setupEventListeners() {
   // Reset button
   document.getElementById('resetBtn').addEventListener('click', resetForm);
 
+  // Settings button
+  document.getElementById('settingsBtn').addEventListener('click', () => {
+    window.location.href = 'settings.html';
+  });
+
   // View ratings button
   document.getElementById('viewRatingsBtn').addEventListener('click', showSavedRatings);
 
