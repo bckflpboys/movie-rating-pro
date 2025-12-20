@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Rating Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+            <path d="M16 8L18.5 13.5L24 14.5L20 18.5L21 24L16 21.5L11 24L12 18.5L8 14.5L13.5 13.5L16 8Z" fill="white"/>
+            <defs>
+              <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                <stop offset="0%" stop-color="#8B5CF6"/>
+                <stop offset="100%" stop-color="#EC4899"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1>Movie Rating Pro</h1>
+        </div>
+        <button class="view-ratings-btn" id="viewRatingsBtn">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 4H17M3 10H17M3 16H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <!-- Rating Form -->
+      <div class="rating-form" id="ratingForm">
+        <!-- Movie Title Input -->
+        <div class="movie-title-section">
+          <label for="movieTitle" class="section-label">Movie Title</label>
+          <input type="text" id="movieTitle" class="movie-title-input" placeholder="Enter movie name...">
+        </div>
+
+        <!-- Time Segments Section -->
+        <div class="section">
+          <h2 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2"/>
+              <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Time Segments
+          </h2>
+          
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">First 30 Minutes</span>
+              <span class="rating-value" id="first30Value">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="first30" data-category="first30">
+          </div>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Middle Hour</span>
+              <span class="rating-value" id="middleHourValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="middleHour" data-category="middleHour">
+          </div>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Last 30 Minutes</span>
+              <span class="rating-value" id="last30Value">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="last30" data-category="last30">
+          </div>
+        </div>
+
+        <!-- Production Quality Section -->
+        <div class="section">
+          <h2 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M18 8L20 6V14L18 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Production Quality
+          </h2>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Sound Design</span>
+              <span class="rating-value" id="soundValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="sound" data-category="sound">
+          </div>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Music Score</span>
+              <span class="rating-value" id="musicValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="music" data-category="music">
+          </div>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Visual Quality</span>
+              <span class="rating-value" id="qualityValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="quality" data-category="quality">
+          </div>
+        </div>
+
+        <!-- Creative Aspects Section -->
+        <div class="section">
+          <h2 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            Creative Aspects
+          </h2>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Directing</span>
+              <span class="rating-value" id="directingValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="directing" data-category="directing">
+          </div>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Acting</span>
+              <span class="rating-value" id="actingValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="acting" data-category="acting">
+          </div>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Screenplay</span>
+              <span class="rating-value" id="screenplayValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="screenplay" data-category="screenplay">
+          </div>
+
+          <div class="rating-item">
+            <div class="rating-header">
+              <span class="rating-label">Cinematography</span>
+              <span class="rating-value" id="cinematographyValue">5</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" class="rating-slider" id="cinematography" data-category="cinematography">
+          </div>
+        </div>
+
+        <!-- Overall Score Display -->
+        <div class="score-section">
+          <div class="score-card">
+            <div class="stars" id="starsDisplay">
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z"/></svg>
+            </div>
+            <div class="score-display">
+              <span class="score-number" id="totalScore">5.0</span>
+              <span class="score-label">/ 10</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="btn btn-secondary" id="resetBtn">Reset</button>
+          <button class="btn btn-primary" id="saveBtn">Save Rating</button>
+        </div>
+      </div>
+
+      <!-- Saved Ratings View -->
+      <div class="saved-ratings hidden" id="savedRatings">
+        <div class="saved-header">
+          <button class="back-btn" id="backBtn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+          </button>
+          <h2>Saved Ratings</h2>
+        </div>
+        <div class="ratings-list" id="ratingsList">
+          <!-- Ratings will be dynamically inserted here -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

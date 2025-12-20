@@ -1,0 +1,376 @@
+// Rating categories and their IDs
+const ratingCategories = [
+  'first30',
+  'middleHour',
+  'last30',
+  'sound',
+  'music',
+  'quality',
+  'directing',
+  'acting',
+  'screenplay',
+  'cinematography'
+];
+
+// Initialize the extension
+document.addEventListener('DOMContentLoaded', () => {
+  initializeSliders();
+  setupEventListeners();
+  updateTotalScore();
+});
+
+// Initialize all rating sliders
+function initializeSliders() {
+  ratingCategories.forEach(category => {
+    const slider = document.getElementById(category);
+    const valueDisplay = document.getElementById(`${category}Value`);
+    
+    if (slider && valueDisplay) {
+      // Set initial value
+      valueDisplay.textContent = slider.value;
+      
+      // Add input event listener
+      slider.addEventListener('input', (e) => {
+        valueDisplay.textContent = e.target.value;
+        updateTotalScore();
+        animateValueChange(valueDisplay);
+      });
+    }
+  });
+}
+
+// Setup all event listeners
+function setupEventListeners() {
+  // Save button
+  document.getElementById('saveBtn').addEventListener('click', saveRating);
+  
+  // Reset button
+  document.getElementById('resetBtn').addEventListener('click', resetForm);
+  
+  // View ratings button
+  document.getElementById('viewRatingsBtn').addEventListener('click', showSavedRatings);
+  
+  // Back button
+  document.getElementById('backBtn').addEventListener('click', showRatingForm);
+}
+
+// Animate value change
+function animateValueChange(element) {
+  element.style.transform = 'scale(1.2)';
+  setTimeout(() => {
+    element.style.transform = 'scale(1)';
+  }, 200);
+}
+
+// Calculate and update total score
+function updateTotalScore() {
+  let total = 0;
+  let count = 0;
+  
+  ratingCategories.forEach(category => {
+    const slider = document.getElementById(category);
+    if (slider) {
+      total += parseInt(slider.value);
+      count++;
+    }
+  });
+  
+  const average = total / count;
+  const scoreElement = document.getElementById('totalScore');
+  scoreElement.textContent = average.toFixed(1);
+  
+  // Update stars display
+  updateStarsDisplay(average);
+}
+
+// Update stars based on score
+function updateStarsDisplay(score) {
+  const stars = document.querySelectorAll('#starsDisplay .star');
+  const fullStars = Math.floor(score / 2);
+  const hasHalfStar = (score / 2) % 1 >= 0.5;
+  
+  stars.forEach((star, index) => {
+    star.classList.remove('filled', 'half-filled');
+    
+    if (index < fullStars) {
+      star.classList.add('filled');
+    } else if (index === fullStars && hasHalfStar) {
+      star.classList.add('half-filled');
+    }
+  });
+}
+
+// Save rating to Chrome storage
+async function saveRating() {
+  const movieTitle = document.getElementById('movieTitle').value.trim();
+  
+  if (!movieTitle) {
+    showNotification('Please enter a movie title', 'error');
+    document.getElementById('movieTitle').focus();
+    return;
+  }
+  
+  // Collect all ratings
+  const ratings = {};
+  ratingCategories.forEach(category => {
+    const slider = document.getElementById(category);
+    if (slider) {
+      ratings[category] = parseInt(slider.value);
+    }
+  });
+  
+  // Calculate total score
+  const total = Object.values(ratings).reduce((sum, val) => sum + val, 0);
+  const average = total / ratingCategories.length;
+  
+  // Create rating object
+  const rating = {
+    id: Date.now(),
+    movieTitle,
+    ratings,
+    totalScore: parseFloat(average.toFixed(1)),
+    date: new Date().toISOString(),
+    timestamp: Date.now()
+  };
+  
+  // Save to Chrome storage
+  try {
+    const result = await chrome.storage.local.get(['movieRatings']);
+    const movieRatings = result.movieRatings || [];
+    movieRatings.unshift(rating); // Add to beginning of array
+    
+    await chrome.storage.local.set({ movieRatings });
+    
+    showNotification('Rating saved successfully!', 'success');
+    animateSuccess();
+    
+    // Reset form after short delay
+    setTimeout(() => {
+      resetForm();
+    }, 1500);
+  } catch (error) {
+    console.error('Error saving rating:', error);
+    showNotification('Error saving rating', 'error');
+  }
+}
+
+// Reset form to default values
+function resetForm() {
+  document.getElementById('movieTitle').value = '';
+  
+  ratingCategories.forEach(category => {
+    const slider = document.getElementById(category);
+    const valueDisplay = document.getElementById(`${category}Value`);
+    
+    if (slider && valueDisplay) {
+      slider.value = 5;
+      valueDisplay.textContent = '5';
+    }
+  });
+  
+  updateTotalScore();
+}
+
+// Show saved ratings view
+async function showSavedRatings() {
+  document.getElementById('ratingForm').classList.add('hidden');
+  document.getElementById('savedRatings').classList.remove('hidden');
+  
+  await loadSavedRatings();
+}
+
+// Show rating form view
+function showRatingForm() {
+  document.getElementById('savedRatings').classList.add('hidden');
+  document.getElementById('ratingForm').classList.remove('hidden');
+}
+
+// Load and display saved ratings
+async function loadSavedRatings() {
+  const ratingsList = document.getElementById('ratingsList');
+  
+  try {
+    const result = await chrome.storage.local.get(['movieRatings']);
+    const movieRatings = result.movieRatings || [];
+    
+    if (movieRatings.length === 0) {
+      ratingsList.innerHTML = `
+        <div class="empty-state">
+          <svg viewBox="0 0 64 64" fill="none">
+            <path d="M32 8L38 24L54 26L43 37L46 53L32 46L18 53L21 37L10 26L26 24L32 8Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <p>No ratings saved yet.<br>Start rating your first movie!</p>
+        </div>
+      `;
+      return;
+    }
+    
+    ratingsList.innerHTML = movieRatings.map(rating => createRatingCard(rating)).join('');
+    
+    // Add delete button event listeners
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ratingId = parseInt(btn.dataset.id);
+        deleteRating(ratingId);
+      });
+    });
+  } catch (error) {
+    console.error('Error loading ratings:', error);
+    ratingsList.innerHTML = '<div class="empty-state"><p>Error loading ratings</p></div>';
+  }
+}
+
+// Create HTML for a rating card
+function createRatingCard(rating) {
+  const date = new Date(rating.date);
+  const formattedDate = date.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+  
+  const stars = generateStarsHTML(rating.totalScore);
+  
+  // Get top 4 categories to display
+  const topCategories = [
+    { label: 'Acting', value: rating.ratings.acting },
+    { label: 'Directing', value: rating.ratings.directing },
+    { label: 'Music', value: rating.ratings.music },
+    { label: 'Quality', value: rating.ratings.quality }
+  ];
+  
+  return `
+    <div class="rating-card">
+      <div class="rating-card-header">
+        <div>
+          <div class="rating-card-title">${escapeHtml(rating.movieTitle)}</div>
+          <div class="rating-card-date">${formattedDate}</div>
+        </div>
+        <div class="rating-card-score">
+          <div class="rating-card-number">${rating.totalScore}</div>
+          <div class="rating-card-stars">${stars}</div>
+        </div>
+      </div>
+      <div class="rating-card-details">
+        ${topCategories.map(cat => `
+          <div class="rating-detail">
+            <span>${cat.label}</span>
+            <span class="rating-detail-value">${cat.value}/10</span>
+          </div>
+        `).join('')}
+      </div>
+      <button class="delete-btn" data-id="${rating.id}">Delete Rating</button>
+    </div>
+  `;
+}
+
+// Generate stars HTML
+function generateStarsHTML(score) {
+  const fullStars = Math.floor(score / 2);
+  const hasHalfStar = (score / 2) % 1 >= 0.5;
+  let starsHTML = '';
+  
+  for (let i = 0; i < 5; i++) {
+    const fillClass = i < fullStars ? 'filled' : (i === fullStars && hasHalfStar ? 'half-filled' : '');
+    starsHTML += `<svg class="star ${fillClass}" viewBox="0 0 24 24"><path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z"/></svg>`;
+  }
+  
+  return starsHTML;
+}
+
+// Delete a rating
+async function deleteRating(ratingId) {
+  if (!confirm('Are you sure you want to delete this rating?')) {
+    return;
+  }
+  
+  try {
+    const result = await chrome.storage.local.get(['movieRatings']);
+    const movieRatings = result.movieRatings || [];
+    const updatedRatings = movieRatings.filter(r => r.id !== ratingId);
+    
+    await chrome.storage.local.set({ movieRatings: updatedRatings });
+    await loadSavedRatings();
+    
+    showNotification('Rating deleted', 'success');
+  } catch (error) {
+    console.error('Error deleting rating:', error);
+    showNotification('Error deleting rating', 'error');
+  }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#8B5CF6'};
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: slideInRight 0.3s ease;
+  `;
+  notification.textContent = message;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOutRight 0.3s ease';
+    setTimeout(() => notification.remove(), 300);
+  }, 2500);
+}
+
+// Animate success
+function animateSuccess() {
+  const scoreCard = document.querySelector('.score-card');
+  scoreCard.classList.add('success-animation');
+  setTimeout(() => {
+    scoreCard.classList.remove('success-animation');
+  }, 500);
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+  
+  .rating-value {
+    transition: transform 0.2s ease;
+  }
+`;
+document.head.appendChild(style);
