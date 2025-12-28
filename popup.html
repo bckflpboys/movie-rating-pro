@@ -238,6 +238,63 @@
           </button>
           <h2>Saved Ratings</h2>
         </div>
+        <!-- Search and Filter Controls -->
+        <div class="search-filter-container">
+          <!-- Search Bar -->
+          <div class="search-bar">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search by title...">
+            <button class="clear-search" id="clearSearch" style="display: none;">×</button>
+          </div>
+
+          <!-- Sort and Filter Row -->
+          <div class="filter-controls">
+            <select id="sortSelect" class="filter-select">
+              <option value="date-desc">Newest First</option>
+              <option value="date-asc">Oldest First</option>
+              <option value="score-desc">Highest Score</option>
+              <option value="score-asc">Lowest Score</option>
+              <option value="title-asc">Title (A-Z)</option>
+              <option value="title-desc">Title (Z-A)</option>
+            </select>
+
+            <select id="scoreFilter" class="filter-select">
+              <option value="all">All Scores</option>
+              <option value="9-10">9-10 (Excellent)</option>
+              <option value="7-8">7-8 (Good)</option>
+              <option value="5-6">5-6 (Average)</option>
+              <option value="1-4">1-4 (Poor)</option>
+            </select>
+
+            <button class="filter-toggle-btn" id="filterToggleBtn">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M4 6h12M6 10h8M8 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Filters
+            </button>
+          </div>
+
+          <!-- Advanced Filters -->
+          <div class="advanced-filters hidden" id="advancedFilters">
+            <div class="filter-row">
+              <label>Date Range:</label>
+              <input type="date" id="dateFrom" class="date-input">
+              <span>to</span>
+              <input type="date" id="dateTo" class="date-input">
+            </div>
+            <div class="filter-actions">
+              <button class="btn-secondary" id="clearFilters">Clear Filters</button>
+              <button class="btn-primary" id="applyFilters">Apply</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Count -->
+        <div class="results-count" id="resultsCount">
+          <span id="resultText">Loading...</span>
+        </div>
         <div class="ratings-list" id="ratingsList">
           <!-- Ratings will be dynamically inserted here -->
         </div>

@@ -510,10 +510,14 @@ function showRatingForm() {
 // Load and display saved ratings
 async function loadSavedRatings() {
   const ratingsList = document.getElementById('ratingsList');
+  const resultText = document.getElementById('resultText');
 
   try {
     const result = await chrome.storage.local.get(['movieRatings']);
     const movieRatings = result.movieRatings || [];
+
+    // Store all ratings globally
+    allRatings = movieRatings;
 
     if (movieRatings.length === 0) {
       ratingsList.innerHTML = `
@@ -524,36 +528,19 @@ async function loadSavedRatings() {
           <p>No ratings saved yet.<br>Start rating your first movie!</p>
         </div>
       `;
+      if (resultText) {
+        resultText.textContent = '0 ratings';
+      }
       return;
     }
 
-    ratingsList.innerHTML = movieRatings.map(rating => createRatingCard(rating)).join('');
+    // Initialize filters and apply
+    initializeSearchAndFilters();
+    applyFiltersAndSort();
 
-    // Add click event listeners to rating cards
-    document.querySelectorAll('.rating-card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        // Don't trigger if clicking delete button
-        if (e.target.closest('.delete-btn')) return;
-
-        const ratingId = parseInt(card.dataset.id);
-        const rating = movieRatings.find(r => r.id === ratingId);
-        if (rating) {
-          showRatingDetail(rating);
-        }
-      });
-    });
-
-    // Add delete button event listeners
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const ratingId = parseInt(btn.dataset.id);
-        deleteRating(ratingId);
-      });
-    });
   } catch (error) {
     console.error('Error loading ratings:', error);
-    ratingsList.innerHTML = '<div class="empty-state"><p>Error loading ratings</p></div>';
+    ratingsList.innerHTML = '<div class="error-state">Error loading ratings</div>';
   }
 }
 
@@ -926,3 +913,194 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// Global variables for filtering and sorting
+let allRatings = [];
+let filteredRatings = [];
+let currentFilters = {
+  search: '',
+  scoreRange: 'all',
+  dateFrom: '',
+  dateTo: '',
+  sortBy: 'date-desc'
+};
+
+// Initialize search and filter controls
+function initializeSearchAndFilters() {
+  const searchInput = document.getElementById('searchInput');
+  const clearSearch = document.getElementById('clearSearch');
+  const sortSelect = document.getElementById('sortSelect');
+  const scoreFilter = document.getElementById('scoreFilter');
+  const filterToggleBtn = document.getElementById('filterToggleBtn');
+  const advancedFilters = document.getElementById('advancedFilters');
+  const clearFilters = document.getElementById('clearFilters');
+  const applyFilters = document.getElementById('applyFilters');
+
+  // Search input
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentFilters.search = e.target.value;
+      clearSearch.style.display = e.target.value ? 'block' : 'none';
+      applyFiltersAndSort();
+    });
+  }
+
+  // Clear search
+  if (clearSearch) {
+    clearSearch.addEventListener('click', () => {
+      searchInput.value = '';
+      currentFilters.search = '';
+      clearSearch.style.display = 'none';
+      applyFiltersAndSort();
+    });
+  }
+
+  // Sort select
+  if (sortSelect) {
+    sortSelect.addEventListener('change', (e) => {
+      currentFilters.sortBy = e.target.value;
+      applyFiltersAndSort();
+    });
+  }
+
+  // Score filter
+  if (scoreFilter) {
+    scoreFilter.addEventListener('change', (e) => {
+      currentFilters.scoreRange = e.target.value;
+      applyFiltersAndSort();
+    });
+  }
+
+  // Filter toggle
+  if (filterToggleBtn) {
+    filterToggleBtn.addEventListener('click', () => {
+      advancedFilters.classList.toggle('hidden');
+      filterToggleBtn.classList.toggle('active');
+    });
+  }
+
+  // Clear filters
+  if (clearFilters) {
+    clearFilters.addEventListener('click', () => {
+      document.getElementById('dateFrom').value = '';
+      document.getElementById('dateTo').value = '';
+      currentFilters.dateFrom = '';
+      currentFilters.dateTo = '';
+      applyFiltersAndSort();
+    });
+  }
+
+  // Apply filters
+  if (applyFilters) {
+    applyFilters.addEventListener('click', () => {
+      currentFilters.dateFrom = document.getElementById('dateFrom').value;
+      currentFilters.dateTo = document.getElementById('dateTo').value;
+      applyFiltersAndSort();
+    });
+  }
+}
+
+// Apply filters and sort
+function applyFiltersAndSort() {
+  // Start with all ratings
+  filteredRatings = [...allRatings];
+
+  // Apply search filter
+  if (currentFilters.search) {
+    const searchLower = currentFilters.search.toLowerCase();
+    filteredRatings = filteredRatings.filter(rating =>
+      rating.movieTitle.toLowerCase().includes(searchLower)
+    );
+  }
+
+  // Apply score filter
+  if (currentFilters.scoreRange !== 'all') {
+    const [min, max] = currentFilters.scoreRange.split('-').map(Number);
+    filteredRatings = filteredRatings.filter(rating =>
+      rating.totalScore >= min && rating.totalScore <= max
+    );
+  }
+
+  // Apply date range filter
+  if (currentFilters.dateFrom) {
+    const fromDate = new Date(currentFilters.dateFrom);
+    filteredRatings = filteredRatings.filter(rating =>
+      new Date(rating.date) >= fromDate
+    );
+  }
+
+  if (currentFilters.dateTo) {
+    const toDate = new Date(currentFilters.dateTo);
+    toDate.setHours(23, 59, 59, 999); // End of day
+    filteredRatings = filteredRatings.filter(rating =>
+      new Date(rating.date) <= toDate
+    );
+  }
+
+  // Apply sorting
+  filteredRatings.sort((a, b) => {
+    switch (currentFilters.sortBy) {
+      case 'date-desc':
+        return b.id - a.id;
+      case 'date-asc':
+        return a.id - b.id;
+      case 'score-desc':
+        return b.totalScore - a.totalScore;
+      case 'score-asc':
+        return a.totalScore - b.totalScore;
+      case 'title-asc':
+        return a.movieTitle.localeCompare(b.movieTitle);
+      case 'title-desc':
+        return b.movieTitle.localeCompare(a.movieTitle);
+      default:
+        return 0;
+    }
+  });
+
+  // Update display
+  displayFilteredRatings();
+}
+
+// Display filtered ratings
+function displayFilteredRatings() {
+  const ratingsList = document.getElementById('ratingsList');
+  const resultText = document.getElementById('resultText');
+
+  // Update results count
+  const total = allRatings.length;
+  const shown = filteredRatings.length;
+  if (shown === total) {
+    resultText.textContent = `${total} rating${total !== 1 ? 's' : ''}`;
+  } else {
+    resultText.textContent = `Showing ${shown} of ${total} ratings`;
+  }
+
+  // Display ratings
+  if (filteredRatings.length === 0) {
+    ratingsList.innerHTML = '<div class="no-ratings">No ratings found</div>';
+    return;
+  }
+
+  ratingsList.innerHTML = filteredRatings.map(rating => createRatingCard(rating)).join('');
+
+  // Add click event listeners
+  document.querySelectorAll('.rating-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.delete-btn')) return;
+      const ratingId = parseInt(card.dataset.id);
+      const rating = allRatings.find(r => r.id === ratingId);
+      if (rating) {
+        showRatingDetail(rating);
+      }
+    });
+  });
+
+  // Add delete button event listeners
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const ratingId = parseInt(btn.dataset.id);
+      deleteRating(ratingId);
+    });
+  });
+}
