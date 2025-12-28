@@ -129,7 +129,7 @@
             transition: background 0.3s;
         }
 
-                .toggle-switch {
+        .toggle-switch {
             position: relative;
             width: 48px;
             height: 24px;
@@ -138,7 +138,8 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-.field-item .toggle-switch.active {
+
+        .field-item .toggle-switch.active {
             background: #8B5CF6;
         }
 
@@ -234,7 +235,7 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
-                .toggle-switch {
+        .toggle-switch {
             position: relative;
             width: 48px;
             height: 24px;
@@ -316,47 +317,92 @@
             <div class="field-list" id="defaultFieldsList">
                 <!-- Default fields will be populated here -->
             </div>
-        
-        <!-- Rating Categories Section -->
-        <div class="settings-section">
-            <h2>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z" 
-                          stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                </svg>
-                Rating Categories
-            </h2>
-            <p>Enable or disable rating categories that appear in the rating form. All categories are optional.</p>
-            <div class="field-list" id="ratingCategoriesList">
-                <!-- Rating categories will be populated here -->
+
+            <!-- Rating Categories Section -->
+            <div class="settings-section">
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z"
+                            stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                    </svg>
+                    Rating Categories
+                </h2>
+                <p>Enable or disable rating categories that appear in the rating form. All categories are optional.</p>
+                <div class="field-list" id="ratingCategoriesList">
+                    <!-- Rating categories will be populated here -->
+                </div>
             </div>
+
+            <!-- Custom Fields Section -->
+            <div class="settings-section">
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    Custom Fields
+                </h2>
+                <p>Add your own custom fields to track additional information about movies.</p>
+                <div class="field-list" id="customFieldsList">
+                    <!-- Custom fields will be populated here -->
+                </div>
+                <button class="add-field-btn" id="addCustomFieldBtn">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    Add Custom Field
+                </button>
+            </div>
+
+            <!-- Save Button -->
+            <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
+
+            <!-- Footer -->
+            <footer class="settings-footer">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#settingsFooterGradient)" />
+                            <path d="M16 8L18.5 13.5L24 14.5L20 18.5L21 24L16 21.5L11 24L12 18.5L8 14.5L13.5 13.5L16 8Z"
+                                fill="white" />
+                            <defs>
+                                <linearGradient id="settingsFooterGradient" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#8B5CF6" />
+                                    <stop offset="100%" stop-color="#EC4899" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span class="footer-text">Movie Rating Pro</span>
+                        <span class="footer-version">v1.0.1</span>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" title="About">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" />
+                                <path d="M10 10V14M10 6V7" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </a>
+                        <a href="#" class="footer-link" title="Help">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" />
+                                <path
+                                    d="M8 8C8 6.89543 8.89543 6 10 6C11.1046 6 12 6.89543 12 8C12 9.10457 11.1046 10 10 10V11M10 14V14.5"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    Made with <svg width="12" height="12" viewBox="0 0 20 20" fill="#EC4899"
+                        style="display: inline; vertical-align: middle;">
+                        <path
+                            d="M10 18C10 18 3 12 3 7.5C3 5.5 4.5 4 6.5 4C8 4 9.5 5 10 6C10.5 5 12 4 13.5 4C15.5 4 17 5.5 17 7.5C17 12 10 18 10 18Z" />
+                    </svg> by Movie Rating Pro Team
+                </div>
+            </footer>
         </div>
 
-        <!-- Custom Fields Section -->
-        <div class="settings-section">
-            <h2>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-                Custom Fields
-            </h2>
-            <p>Add your own custom fields to track additional information about movies.</p>
-            <div class="field-list" id="customFieldsList">
-                <!-- Custom fields will be populated here -->
-            </div>
-            <button class="add-field-btn" id="addCustomFieldBtn">
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-                Add Custom Field
-            </button>
-        </div>
-
-        <!-- Save Button -->
-        <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
-    </div>
-
-    <script src="settings.js"></script>
+        <script src="settings.js"></script>
 </body>
 
 </html>
