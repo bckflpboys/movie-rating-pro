@@ -11,7 +11,8 @@ const fieldTypes = [
     { value: 'number', label: 'Number' },
     { value: 'date', label: 'Date' },
     { value: 'datetime-local', label: 'Date & Time' },
-    { value: 'select', label: 'Dropdown' }
+    { value: 'select', label: 'Dropdown' },
+    { value: 'slider', label: 'Rating Slider (1-10)' }
 ];
 
 // Initialize settings page

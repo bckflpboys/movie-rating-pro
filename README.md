@@ -51,9 +51,10 @@ Rate movies across 10 different categories:
 
 ### 🎨 Custom Fields
 **NEW!** Add your own personalized fields to track additional information:
-- Choose from 6 field types (Text, Long Text, Number, Date, Date & Time, Dropdown)
+- Choose from 7 field types (Text, Long Text, Number, Date, Date & Time, Dropdown, **Rating Slider**)
 - Unlimited custom fields
 - Fully persistent across sessions
+- Rating sliders work just like the default rating categories (1-10 scale)
 - See [CUSTOM_FIELDS_QUICK_START.md](CUSTOM_FIELDS_QUICK_START.md) for details
 
 ### ⭐ Features

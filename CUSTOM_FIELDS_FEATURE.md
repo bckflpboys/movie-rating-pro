@@ -18,6 +18,7 @@ The custom fields feature allows users to add personalized fields to the movie r
      - **Date**: Date picker
      - **Date & Time**: Date and time picker
      - **Dropdown**: Select from predefined options (requires comma-separated options)
+     - **Rating Slider (1-10)**: Interactive slider for rating (just like the default rating categories)
 4. **Save Settings**: Click "Save Settings" to apply your changes
 
 ### Using Custom Fields
@@ -86,6 +87,7 @@ All custom fields and their values are stored using Chrome's local storage API:
 | date | `<input type="date">` | Date selection |
 | datetime-local | `<input type="datetime-local">` | Date and time |
 | select | `<select>` | Predefined options |
+| slider | `<input type="range">` | Rating scale (1-10) |
 
 ## Features
 

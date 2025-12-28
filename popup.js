@@ -136,6 +136,48 @@ function createCustomFieldElement(field) {
   let input;
 
   switch (field.type) {
+    case 'slider':
+      // Create a rating slider similar to default ones
+      const sliderContainer = document.createElement('div');
+      sliderContainer.className = 'rating-item';
+
+      const sliderHeader = document.createElement('div');
+      sliderHeader.className = 'rating-header';
+
+      const sliderLabel = document.createElement('span');
+      sliderLabel.className = 'rating-label';
+      sliderLabel.textContent = field.label;
+
+      const sliderValue = document.createElement('span');
+      sliderValue.className = 'rating-value';
+      sliderValue.id = `${field.id}Value`;
+      sliderValue.textContent = '5';
+
+      sliderHeader.appendChild(sliderLabel);
+      sliderHeader.appendChild(sliderValue);
+
+      const slider = document.createElement('input');
+      slider.type = 'range';
+      slider.min = '1';
+      slider.max = '10';
+      slider.value = '5';
+      slider.className = 'rating-slider';
+      slider.id = field.id;
+
+      // Add input event listener for real-time updates
+      slider.addEventListener('input', (e) => {
+        sliderValue.textContent = e.target.value;
+        animateValueChange(sliderValue);
+      });
+
+      sliderContainer.appendChild(sliderHeader);
+      sliderContainer.appendChild(slider);
+
+      // For slider type, we don't use the standard label/input structure
+      // Instead, return the complete slider container wrapped in section
+      section.appendChild(sliderContainer);
+      return section;
+
     case 'textarea':
       input = document.createElement('textarea');
       input.className = 'movie-title-input';
@@ -295,11 +337,21 @@ async function saveRating() {
 
   // Collect custom field values
   const customFieldValues = {};
+  const result = await chrome.storage.local.get(['customFields']);
+  const customFieldDefs = result.customFields || [];
+
   document.querySelectorAll('.custom-field-section').forEach(section => {
     const fieldId = section.dataset.fieldId;
     const input = section.querySelector('input, textarea, select');
     if (input && fieldId) {
-      customFieldValues[fieldId] = input.value;
+      // Find field definition to check if it's a slider
+      const fieldDef = customFieldDefs.find(f => f.id === fieldId);
+      if (fieldDef && fieldDef.type === 'slider') {
+        // Store slider values as integers
+        customFieldValues[fieldId] = parseInt(input.value);
+      } else {
+        customFieldValues[fieldId] = input.value;
+      }
     }
   });
 
@@ -351,6 +403,13 @@ function resetForm() {
     if (input) {
       if (input.tagName === 'SELECT') {
         input.selectedIndex = 0;
+      } else if (input.type === 'range') {
+        // Reset slider to default value of 5
+        input.value = '5';
+        const valueDisplay = document.getElementById(`${input.id}Value`);
+        if (valueDisplay) {
+          valueDisplay.textContent = '5';
+        }
       } else {
         input.value = '';
       }
@@ -608,16 +667,52 @@ async function showRatingDetail(rating) {
       const customFieldDefs = result.customFields || [];
 
       const customFieldsData = [];
+      const customSliderData = [];
+
       for (const [fieldId, fieldValue] of Object.entries(rating.customFields)) {
-        if (fieldValue) { // Only show fields with values
+        if (fieldValue || fieldValue === 0) { // Show fields with values (including 0)
           const fieldDef = customFieldDefs.find(f => f.id === fieldId);
           const label = fieldDef ? fieldDef.label : fieldId;
-          customFieldsData.push({ label, value: fieldValue });
+
+          // Separate sliders from other fields
+          if (fieldDef && fieldDef.type === 'slider') {
+            customSliderData.push({ label, value: fieldValue });
+          } else if (fieldValue) { // Only show non-slider fields if they have non-empty values
+            customFieldsData.push({ label, value: fieldValue });
+          }
         }
       }
 
+      // Build HTML for custom sliders (if any)
+      let customSlidersHTML = '';
+      if (customSliderData.length > 0) {
+        customSlidersHTML = `
+          <div class="detail-section">
+            <h3 class="detail-section-title">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+              </svg>
+              Custom Ratings
+            </h3>
+            <div class="detail-ratings">
+              ${customSliderData.map(field => `
+                <div class="detail-rating-item">
+                  <div class="detail-rating-label">${escapeHtml(field.label)}</div>
+                  <div class="detail-rating-bar-container">
+                    <div class="detail-rating-bar" style="width: ${field.value * 10}%"></div>
+                  </div>
+                  <div class="detail-rating-value">${field.value}/10</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Build HTML for other custom fields (if any)
+      let customFieldsTextHTML = '';
       if (customFieldsData.length > 0) {
-        customFieldsHTML = `
+        customFieldsTextHTML = `
           <div class="detail-section">
             <h3 class="detail-section-title">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -636,6 +731,9 @@ async function showRatingDetail(rating) {
           </div>
         `;
       }
+
+      // Combine both sections
+      customFieldsHTML = customSlidersHTML + customFieldsTextHTML;
     } catch (error) {
       console.error('Error loading custom fields for detail view:', error);
     }

@@ -15,6 +15,7 @@ Click the **⚙️ Settings** icon in the top-right corner of the extension.
    - 📅 **Date** - For date selection
    - 🕐 **Date & Time** - For date and time
    - 📋 **Dropdown** - For selecting from options
+   - ⭐ **Rating Slider (1-10)** - For rating scales (like the default ratings)
 
 ### Step 3: Configure Dropdown (Optional)
 If you selected "Dropdown", enter your options separated by commas:
@@ -50,6 +51,8 @@ When you view a saved rating:
 - **Watched With** (Text)
 - **Rewatch?** (Dropdown: Yes, No, Maybe)
 - **Mood** (Dropdown: Happy, Sad, Excited, Bored)
+- **Rewatchability** (Rating Slider) - How likely to watch again
+- **Emotional Impact** (Rating Slider) - How much it affected you
 
 ### Detailed Notes
 - **Favorite Scene** (Long Text)
@@ -94,8 +97,10 @@ Here's a great starter configuration:
 1. **Director** (Text)
 2. **Genre** (Dropdown: Action, Comedy, Drama, Horror, Sci-Fi, Thriller)
 3. **Platform** (Dropdown: Theater, Netflix, Amazon Prime, Disney+, HBO Max)
-4. **My Review** (Long Text)
-5. **Would Recommend?** (Dropdown: Yes, No, Maybe)
+4. **Rewatchability** (Rating Slider)
+5. **Emotional Impact** (Rating Slider)
+6. **My Review** (Long Text)
+7. **Would Recommend?** (Dropdown: Yes, No, Maybe)
 
 ## ❓ FAQ
 
