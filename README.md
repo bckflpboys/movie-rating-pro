@@ -1,6 +1,6 @@
 # Movie Rating Pro - Chrome Extension
 
-A powerful and highly customizable Chrome extension for rating movies with detailed scoring across multiple categories. Features automatic title detection, custom fields, optional rating categories, and comprehensive rating analytics.
+A powerful and highly customizable Chrome extension for rating movies with detailed scoring across multiple categories. Features automatic title detection, trending movies carousel, custom fields, search/filter/sort capabilities, CSV export, and comprehensive rating analytics.
 
 ## 🌟 Key Features
 
@@ -18,6 +18,64 @@ Automatically detects movie titles from streaming platforms and video websites:
 - Common video title patterns
 - Document title analysis
 - Manual refresh button for re-detection
+
+### 🔥 Trending Movies Carousel
+Browse and discover trending movies directly in the extension:
+
+**Features:**
+- Top 10 trending movies of the week (powered by TMDB API)
+- Movie posters with ratings
+- Auto-scrolling carousel (pauses on hover)
+- Click any movie to auto-fill the title
+- Collapsible section to save space
+- Smooth animations and transitions
+
+### 🚀 Quick Actions Bar
+Fast access to key features right below the header:
+
+- **📋 History** - View all saved ratings instantly
+- **⚙️ Settings** - Access extension settings
+- **📄 Export** - Export ratings to CSV spreadsheet
+
+### 📊 Advanced Search, Filter & Sort
+Powerful tools to manage your movie collection:
+
+**Search:**
+- Real-time search by movie title
+- Instant results as you type
+- Clear search button
+
+**Filter:**
+- Score ranges (9-10 Excellent, 7-8 Good, 5-6 Average, 1-4 Poor)
+- Date range filtering
+- Advanced filters panel
+
+**Sort:**
+- Newest/Oldest first
+- Highest/Lowest score
+- Title (A-Z / Z-A)
+
+**Results Display:**
+- Shows count of filtered results
+- "Showing X of Y ratings" when filtered
+- Smooth transitions
+
+### 💾 Export to CSV
+Export all your ratings to a spreadsheet:
+
+**Export Includes:**
+- Movie name and genre (empty for manual entry)
+- All rating categories (Visual Quality, Audio, Writing, Directing, Acting, etc.)
+- Time segments (Intro, Middle, Ending)
+- Soundtrack rating
+- Watch date and total score
+- All custom fields (sliders and text)
+
+**Features:**
+- One-click export from quick actions bar
+- Proper CSV formatting (opens in Excel/Google Sheets)
+- Filename: `movie-ratings-YYYY-MM-DD.csv`
+- Handles special characters and commas correctly
 
 ### 📊 Flexible Rating System
 
@@ -39,7 +97,7 @@ Automatically detects movie titles from streaming platforms and video websites:
 - Screenplay
 - Cinematography
 
-**✨ NEW: All categories can be enabled/disabled from Settings!**
+**✨ All categories can be enabled/disabled from Settings!**
 
 ### 🎨 Custom Fields System
 
@@ -57,7 +115,7 @@ Automatically detects movie titles from streaming platforms and video websites:
 - ✅ Custom sliders count toward total score
 - ✅ Fully persistent across sessions
 - ✅ Easy management (add/edit/delete)
-- ✅ Displayed in detail view
+- ✅ Displayed in detail view and exports
 
 ### ⚙️ Advanced Settings
 
@@ -98,14 +156,33 @@ Automatically detects movie titles from streaming platforms and video websites:
 
 1. **Navigate to a movie** on any streaming platform
 2. **Click the extension icon** - Title auto-fills
-3. **Adjust rating sliders** - Score updates in real-time
-4. **Fill custom fields** (if any)
-5. **Click "Save Rating"** - Done!
+3. **Browse trending movies** (optional) - Click to auto-fill title
+4. **Adjust rating sliders** - Score updates in real-time
+5. **Fill custom fields** (if any)
+6. **Click "Save Rating"** - Done!
+
+### Quick Actions
+
+**History Button:**
+- View all saved ratings
+- Search, filter, and sort your collection
+- Click any rating for detailed view
+
+**Settings Button:**
+- Configure rating categories
+- Add/manage custom fields
+- Customize your rating experience
+
+**Export Button:**
+- Export all ratings to CSV
+- Opens in Excel/Google Sheets
+- Perfect for backup or analysis
 
 ### Settings Configuration
 
 **Access Settings:**
-- Click the ⚙️ icon in the extension popup
+- Click the ⚙️ icon in the header OR
+- Click "Settings" in quick actions bar
 
 **Configure Rating Categories:**
 1. Go to "Rating Categories" section
@@ -129,12 +206,21 @@ Automatically detects movie titles from streaming platforms and video websites:
 
 ### Viewing Saved Ratings
 
-1. Click the menu icon (≡) in top-right
-2. Browse all saved ratings
-3. Click any rating card for detailed view
-4. See all category scores with visual bars
-5. View custom field values
-6. Delete ratings if needed
+1. Click "History" in quick actions OR menu icon (≡) in top-right
+2. Use search bar to find specific movies
+3. Filter by score range or date
+4. Sort by date, score, or title
+5. Click any rating card for detailed view
+6. See all category scores with visual bars
+7. View custom field values
+8. Delete ratings if needed
+
+### Exporting Ratings
+
+1. Click "Export" in quick actions bar
+2. CSV file downloads automatically
+3. Open in Excel, Google Sheets, or any spreadsheet app
+4. All ratings and custom fields included
 
 ## 🔧 Technical Details
 
@@ -142,8 +228,8 @@ Automatically detects movie titles from streaming platforms and video websites:
 
 **Files:**
 - `manifest.json` - Extension configuration (Manifest V3)
-- `popup.html` - Main popup interface
-- `popup.js` - Core logic and Chrome API interactions
+- `popup.html` - Main popup interface with quick actions
+- `popup.js` - Core logic, Chrome API, trending movies, export
 - `settings.html` - Settings page interface
 - `settings.js` - Settings management
 - `content.js` - Content script for title detection
@@ -187,18 +273,29 @@ Includes:
 - Excludes disabled categories
 ```
 
+### TMDB API Integration
+
+**Trending Movies:**
+- Uses TMDB API for trending movies data
+- Free tier: 40 requests per 10 seconds
+- Demo API key included (get your own at themoviedb.org)
+- Displays top 10 trending movies of the week
+- Auto-scrolling carousel with pause on hover
+
 ## 🎯 Use Cases
 
 ### Movie Enthusiast
 - Track all movies watched
 - Rate across multiple dimensions
-- Add personal notes and reviews
-- See rating history
+- Export to spreadsheet for analysis
+- Search and filter your collection
+- Discover trending movies
 
 ### Film Student
 - Analyze technical aspects
 - Custom fields for cinematography notes
 - Track directors and styles
+- Export data for academic projects
 - Build comprehensive database
 
 ### Casual Viewer
@@ -206,12 +303,14 @@ Includes:
 - Track where watched (platform)
 - Note who watched with
 - Simple rewatchability rating
+- Export to share with friends
 
-### Genre-Specific
-- Different category setups for different genres
-- Horror: Enable scariness, gore level
-- Comedy: Enable humor level
-- Drama: Focus on acting, screenplay
+### Data Analyst
+- Export to CSV for analysis
+- Track rating patterns over time
+- Filter by score ranges
+- Sort by various criteria
+- Backup data regularly
 
 ## 📊 Statistics
 
@@ -220,25 +319,31 @@ Includes:
 - 7 custom field types
 - Unlimited custom fields
 - Automatic title detection
+- Trending movies carousel (TMDB API)
+- Search, filter, and sort
+- CSV export functionality
+- Quick actions bar
 - Persistent storage
 - Detailed analytics
 - Beautiful UI
 
 **Code Stats:**
-- ~31KB JavaScript (popup.js)
+- ~45KB JavaScript (popup.js)
 - ~11KB JavaScript (settings.js)
-- ~16KB CSS
-- ~12KB HTML (popup)
+- ~25KB CSS
+- ~17KB HTML (popup)
 - ~11KB HTML (settings)
+- ~10KB JavaScript (content.js)
 
 ## 🔒 Privacy
 
 - ✅ All data stored locally on your device
-- ✅ No external servers
+- ✅ No external servers (except TMDB API for trending movies)
 - ✅ No tracking or analytics
 - ✅ No account required
-- ✅ No data collection
+- ✅ No personal data collection
 - ✅ Complete privacy
+- ✅ TMDB API only fetches public movie data
 
 ## 🌐 Browser Compatibility
 
@@ -248,18 +353,14 @@ Includes:
 - ✅ Opera
 - ✅ Any Chromium-based browser
 
-## 📚 Documentation
-
-- [CUSTOM_FIELDS_QUICK_START.md](CUSTOM_FIELDS_QUICK_START.md) - Custom fields guide
-- [CUSTOM_FIELDS_FEATURE.md](CUSTOM_FIELDS_FEATURE.md) - Technical documentation
-- [OPTIONAL_RATING_CATEGORIES.md](OPTIONAL_RATING_CATEGORIES.md) - Category customization
-- [HOW_TO_DISABLE_CATEGORIES.md](HOW_TO_DISABLE_CATEGORIES.md) - Category management
-- [AUTO_TITLE_DETECTION.md](AUTO_TITLE_DETECTION.md) - Title detection details
-- [DETAIL_VIEW_IMPLEMENTATION.md](DETAIL_VIEW_IMPLEMENTATION.md) - Detail view info
-
 ## 🎉 Recent Updates
 
 ### Latest Features (December 2025)
+- ✅ **Quick Actions Bar** - Fast access to History, Settings, Export
+- ✅ **CSV Export** - Export all ratings to spreadsheet
+- ✅ **Trending Movies** - TMDB API integration with carousel
+- ✅ **Search & Filter** - Find ratings by title, score, date
+- ✅ **Sort Options** - Sort by date, score, or title
 - ✅ **Optional Rating Categories** - Enable/disable any category
 - ✅ **Custom Rating Sliders** - Add your own rating categories
 - ✅ **Custom Sliders in Score** - Custom ratings count toward total
@@ -270,12 +371,9 @@ Includes:
 
 ## 🚧 Future Enhancements
 
-### Planned Features
-- [ ] Export ratings to CSV/JSON
-- [ ] Import ratings from files
-- [ ] Search and filter saved ratings
-- [ ] Sort ratings by score, date, or title
-- [ ] Integration with IMDB/TMDB APIs
+### Potential Features
+- [ ] Import ratings from CSV/JSON
+- [ ] Integration with more movie APIs (IMDB, etc.)
 - [ ] Sync ratings across devices (Chrome sync)
 - [ ] Rating statistics and charts
 - [ ] Backup and restore functionality
@@ -285,25 +383,7 @@ Includes:
 - [ ] Dark/light theme toggle
 - [ ] Rating comparison tools
 - [ ] Watchlist integration
-- [ ] Rating reminders
 - [ ] Social sharing features
-
-### Possible Enhancements
-- [ ] Field validation rules
-- [ ] Required custom fields
-- [ ] Conditional field visibility
-- [ ] Drag-and-drop field reordering
-- [ ] Field groups/sections
-- [ ] Default values for fields
-- [ ] Rating presets/templates
-- [ ] Multi-language support
-- [ ] Accessibility improvements
-- [ ] Mobile companion app
-- [ ] Browser action badge with rating count
-- [ ] Quick rate from context menu
-- [ ] Rating notifications
-- [ ] Collaborative ratings
-- [ ] Public rating profiles
 
 ## 🤝 Contributing
 
