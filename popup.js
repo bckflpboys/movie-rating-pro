@@ -315,6 +315,15 @@ function setupEventListeners() {
       btn.classList.remove('spinning');
     }, 1000);
   });
+
+  // Quick action buttons
+  document.getElementById('quickHistoryBtn').addEventListener('click', showSavedRatings);
+
+  document.getElementById('quickSettingsBtn').addEventListener('click', () => {
+    window.location.href = 'settings.html';
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', exportRatingsToCSV);
 }
 
 // Animate value change
@@ -1260,5 +1269,110 @@ function initializeTrendingToggle() {
         }, 400); // Wait for animation to complete
       }
     });
+  }
+}
+
+// Export ratings to CSV
+async function exportRatingsToCSV() {
+  try {
+    const result = await chrome.storage.local.get(['movieRatings', 'customFields']);
+    const movieRatings = result.movieRatings || [];
+    const customFieldDefs = result.customFields || [];
+
+    if (movieRatings.length === 0) {
+      showNotification('No ratings to export', 'warning');
+      return;
+    }
+
+    // Define column headers
+    const headers = [
+      'Name',
+      'Genre',
+      'Quality (Visual)',
+      'Audio',
+      'Writing/Concept',
+      'Directing',
+      'Acting',
+      'Intro',
+      'Middle',
+      'Ending',
+      'Soundtrack',
+      'Watch Date',
+      'Total Score'
+    ];
+
+    // Add custom field headers
+    const customSliderFields = customFieldDefs.filter(f => f.type === 'slider');
+    const customTextFields = customFieldDefs.filter(f => f.type !== 'slider');
+
+    customSliderFields.forEach(field => {
+      headers.push(field.label);
+    });
+
+    customTextFields.forEach(field => {
+      headers.push(field.label);
+    });
+
+    // Create CSV rows
+    const rows = [headers];
+
+    movieRatings.forEach(rating => {
+      const row = [
+        rating.movieTitle || '',
+        '', // Genre - not tracked, empty
+        rating.ratings.quality || '',
+        rating.ratings.sound || '',
+        rating.ratings.screenplay || '',
+        rating.ratings.directing || '',
+        rating.ratings.acting || '',
+        rating.ratings.first30 || '',
+        rating.ratings.middleHour || '',
+        rating.ratings.last30 || '',
+        rating.ratings.music || '',
+        rating.dateWatched ? new Date(rating.dateWatched).toLocaleDateString() : '',
+        rating.totalScore || ''
+      ];
+
+      // Add custom slider values
+      customSliderFields.forEach(field => {
+        row.push(rating.customFields && rating.customFields[field.id] !== undefined ? rating.customFields[field.id] : '');
+      });
+
+      // Add custom text field values
+      customTextFields.forEach(field => {
+        row.push(rating.customFields && rating.customFields[field.id] ? rating.customFields[field.id] : '');
+      });
+
+      rows.push(row);
+    });
+
+    // Convert to CSV string
+    const csvContent = rows.map(row =>
+      row.map(cell => {
+        // Escape quotes and wrap in quotes if contains comma, quote, or newline
+        const cellStr = String(cell);
+        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+          return '"' + cellStr.replace(/"/g, '""') + '"';
+        }
+        return cellStr;
+      }).join(',')
+    ).join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `movie-ratings-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showNotification(`Exported ${movieRatings.length} ratings successfully!`, 'success');
+  } catch (error) {
+    console.error('Error exporting ratings:', error);
+    showNotification('Error exporting ratings', 'error');
   }
 }
