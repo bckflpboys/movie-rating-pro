@@ -810,3 +810,27 @@ body {
   padding: 10px 24px;
   font-size: 14px;
 }
+/* Custom Fields Styles */
+.detail-custom-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.detail-custom-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.detail-custom-field-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: rgba(139, 92, 246, 0.1);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}

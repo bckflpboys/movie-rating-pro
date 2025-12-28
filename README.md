@@ -49,11 +49,20 @@ Rate movies across 10 different categories:
 - Screenplay
 - Cinematography
 
+### 🎨 Custom Fields
+**NEW!** Add your own personalized fields to track additional information:
+- Choose from 6 field types (Text, Long Text, Number, Date, Date & Time, Dropdown)
+- Unlimited custom fields
+- Fully persistent across sessions
+- See [CUSTOM_FIELDS_QUICK_START.md](CUSTOM_FIELDS_QUICK_START.md) for details
+
 ### ⭐ Features
 - Real-time score calculation (out of 10)
 - Visual star rating display (out of 5 stars)
+- **Custom fields for personalized tracking**
+- **Auto-fill date and time when rating**
 - Save ratings locally in Chrome storage
-- View all your saved ratings
+- View all your saved ratings with detailed breakdowns
 - Delete ratings you no longer need
 - Beautiful gradient UI with smooth animations
 - Manual refresh button to re-detect titles
@@ -167,8 +176,9 @@ Potential features for future versions:
 - Sort ratings by score, date, or title
 - Integration with movie databases (IMDB, TMDB)
 - Sync ratings across devices
-- Custom rating categories
-- Notes and comments for each rating
+- ~~Custom rating categories~~ ✅ **Implemented as Custom Fields!**
+- Field validation and required fields
+- Drag-and-drop field reordering
 
 ## Contributing
 

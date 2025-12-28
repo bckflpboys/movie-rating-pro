@@ -95,6 +95,7 @@ function createCustomFieldItem(field, index) {
     const div = document.createElement('div');
     div.className = 'field-item';
     div.dataset.fieldIndex = index;
+    div.dataset.fieldId = field.id || ''; // Store the field ID
 
     const typeOptions = fieldTypes.map(type =>
         `<option value="${type.value}" ${field.type === type.value ? 'selected' : ''}>${type.label}</option>`
@@ -183,8 +184,10 @@ async function saveSettings() {
 
             const label = labelInput.value.trim();
             if (label) {
+                // Use existing ID if available, otherwise generate a new one
+                const existingId = item.dataset.fieldId;
                 const field = {
-                    id: `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    id: existingId || `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
                     label: label,
                     type: typeSelect.value
                 };

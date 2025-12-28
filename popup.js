@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   updateTotalScore();
   autoFillMovieTitle(); // Automatically detect and fill movie title
+  loadCustomFields(); // Load and display custom fields
 });
 
 // Automatically detect and fill the movie title from the active tab
@@ -86,6 +87,91 @@ async function autoFillMovieTitle(force = false) {
       showNotification('Error detecting movie title', 'error');
     }
   }
+}
+
+// Load and display custom fields
+async function loadCustomFields() {
+  try {
+    const result = await chrome.storage.local.get(['customFields']);
+    const customFields = result.customFields || [];
+
+    if (customFields.length === 0) {
+      return; // No custom fields to display
+    }
+
+    // Find the container to insert custom fields (after Date Watched section)
+    const dateWatchedSection = document.querySelector('.movie-title-section:nth-child(2)');
+
+    if (!dateWatchedSection) {
+      console.error('Could not find date watched section');
+      return;
+    }
+
+    // Remove any existing custom fields first
+    document.querySelectorAll('.custom-field-section').forEach(el => el.remove());
+
+    // Create and insert custom fields
+    customFields.forEach(field => {
+      const fieldSection = createCustomFieldElement(field);
+      dateWatchedSection.insertAdjacentElement('afterend', fieldSection);
+    });
+
+    console.log(`Loaded ${customFields.length} custom field(s)`);
+  } catch (error) {
+    console.error('Error loading custom fields:', error);
+  }
+}
+
+// Create a custom field element
+function createCustomFieldElement(field) {
+  const section = document.createElement('div');
+  section.className = 'movie-title-section custom-field-section';
+  section.dataset.fieldId = field.id;
+
+  const label = document.createElement('label');
+  label.htmlFor = field.id;
+  label.className = 'section-label';
+  label.textContent = field.label;
+
+  let input;
+
+  switch (field.type) {
+    case 'textarea':
+      input = document.createElement('textarea');
+      input.className = 'movie-title-input';
+      input.rows = 3;
+      break;
+    case 'select':
+      input = document.createElement('select');
+      input.className = 'movie-title-input';
+      // Add default option
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Select an option...';
+      input.appendChild(defaultOption);
+      // Add custom options
+      if (field.options && Array.isArray(field.options)) {
+        field.options.forEach(optionText => {
+          const option = document.createElement('option');
+          option.value = optionText;
+          option.textContent = optionText;
+          input.appendChild(option);
+        });
+      }
+      break;
+    default:
+      input = document.createElement('input');
+      input.type = field.type;
+      input.className = 'movie-title-input';
+  }
+
+  input.id = field.id;
+  input.placeholder = field.placeholder || `Enter ${field.label.toLowerCase()}...`;
+
+  section.appendChild(label);
+  section.appendChild(input);
+
+  return section;
 }
 
 // Initialize all rating sliders
@@ -207,6 +293,16 @@ async function saveRating() {
     }
   });
 
+  // Collect custom field values
+  const customFieldValues = {};
+  document.querySelectorAll('.custom-field-section').forEach(section => {
+    const fieldId = section.dataset.fieldId;
+    const input = section.querySelector('input, textarea, select');
+    if (input && fieldId) {
+      customFieldValues[fieldId] = input.value;
+    }
+  });
+
   // Calculate total score
   const total = Object.values(ratings).reduce((sum, val) => sum + val, 0);
   const average = total / ratingCategories.length;
@@ -216,6 +312,7 @@ async function saveRating() {
     id: Date.now(),
     movieTitle,
     ratings,
+    customFields: customFieldValues, // Add custom field values
     totalScore: parseFloat(average.toFixed(1)),
     date: dateWatched ? new Date(dateWatched).toISOString() : new Date().toISOString(),
     dateWatched: dateWatched || null,
@@ -247,6 +344,18 @@ async function saveRating() {
 function resetForm() {
   document.getElementById('movieTitle').value = '';
   document.getElementById('dateWatched').value = '';
+
+  // Reset custom fields
+  document.querySelectorAll('.custom-field-section').forEach(section => {
+    const input = section.querySelector('input, textarea, select');
+    if (input) {
+      if (input.tagName === 'SELECT') {
+        input.selectedIndex = 0;
+      } else {
+        input.value = '';
+      }
+    }
+  });
 
   ratingCategories.forEach(category => {
     const slider = document.getElementById(category);
@@ -451,7 +560,7 @@ function escapeHtml(text) {
 }
 
 // Show detailed rating view
-function showRatingDetail(rating) {
+async function showRatingDetail(rating) {
   // Hide saved ratings list
   document.getElementById('savedRatings').classList.add('hidden');
 
@@ -490,6 +599,47 @@ function showRatingDetail(rating) {
   const timeSegments = ['first30', 'middleHour', 'last30'];
   const productionQuality = ['sound', 'music', 'quality'];
   const creativeAspects = ['directing', 'acting', 'screenplay', 'cinematography'];
+
+  // Load custom fields definitions to get labels
+  let customFieldsHTML = '';
+  if (rating.customFields && Object.keys(rating.customFields).length > 0) {
+    try {
+      const result = await chrome.storage.local.get(['customFields']);
+      const customFieldDefs = result.customFields || [];
+
+      const customFieldsData = [];
+      for (const [fieldId, fieldValue] of Object.entries(rating.customFields)) {
+        if (fieldValue) { // Only show fields with values
+          const fieldDef = customFieldDefs.find(f => f.id === fieldId);
+          const label = fieldDef ? fieldDef.label : fieldId;
+          customFieldsData.push({ label, value: fieldValue });
+        }
+      }
+
+      if (customFieldsData.length > 0) {
+        customFieldsHTML = `
+          <div class="detail-section">
+            <h3 class="detail-section-title">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Additional Information
+            </h3>
+            <div class="detail-custom-fields">
+              ${customFieldsData.map(field => `
+                <div class="detail-custom-field">
+                  <div class="detail-rating-label">${escapeHtml(field.label)}</div>
+                  <div class="detail-custom-field-value">${escapeHtml(field.value)}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('Error loading custom fields for detail view:', error);
+    }
+  }
 
   // Create detail HTML
   const detailContent = document.getElementById('ratingDetailContent');
@@ -566,6 +716,8 @@ function showRatingDetail(rating) {
         `).join('')}
       </div>
     </div>
+    
+    ${customFieldsHTML}
     
     <div class="detail-actions">
       <button class="btn btn-secondary detail-delete-btn" data-id="${rating.id}">Delete Rating</button>
