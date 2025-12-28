@@ -1183,3 +1183,12 @@ body {
   width: 10px;
   height: 10px;
 }
+
+/* Smooth auto-scrolling */
+.trending-carousel {
+  scroll-behavior: auto; /* Disable smooth for auto-scroll */
+}
+
+.trending-carousel.manual-scroll {
+  scroll-behavior: smooth; /* Enable smooth for manual scroll */
+}

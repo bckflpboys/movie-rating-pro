@@ -1152,6 +1152,9 @@ async function loadTrendingMovies() {
       </div>
     `).join('');
 
+    // Start auto-scrolling
+    startAutoScroll();
+
     // Add click handlers to auto-fill movie title
     carousel.querySelectorAll('.trending-movie').forEach(movieEl => {
       movieEl.addEventListener('click', () => {
@@ -1181,3 +1184,58 @@ document.addEventListener('DOMContentLoaded', () => {
   // ... existing code ...
   loadTrendingMovies();
 });
+
+// Auto-scroll functionality for trending carousel
+let autoScrollInterval = null;
+let isScrolling = false;
+
+function startAutoScroll() {
+  const carousel = document.getElementById('trendingCarousel');
+  if (!carousel) return;
+
+  // Clear any existing interval
+  if (autoScrollInterval) {
+    clearInterval(autoScrollInterval);
+  }
+
+  // Auto-scroll every 30ms for smooth animation
+  autoScrollInterval = setInterval(() => {
+    if (!isScrolling && carousel) {
+      carousel.scrollLeft += 1; // Scroll 1px at a time for smoothness
+      
+      // Reset to beginning when reaching the end
+      if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
+        carousel.scrollLeft = 0;
+      }
+    }
+  }, 30);
+
+  // Pause on hover
+  carousel.addEventListener('mouseenter', () => {
+    isScrolling = true;
+  });
+
+  // Resume on mouse leave
+  carousel.addEventListener('mouseleave', () => {
+    isScrolling = false;
+  });
+
+  // Pause on touch (mobile)
+  carousel.addEventListener('touchstart', () => {
+    isScrolling = true;
+  });
+
+  carousel.addEventListener('touchend', () => {
+    setTimeout(() => {
+      isScrolling = false;
+    }, 2000); // Resume after 2 seconds
+  });
+}
+
+// Stop auto-scroll (cleanup)
+function stopAutoScroll() {
+  if (autoScrollInterval) {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = null;
+  }
+}
