@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -72,6 +72,18 @@
         <div class="movie-title-section">
           <label for="dateWatched" class="section-label">Date Watched</label>
           <input type="datetime-local" id="dateWatched" class="movie-title-input">
+        
+        <!-- Trending Movies Carousel -->
+        <div class="trending-section">
+          <h3 class="trending-title">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+              <path d="M13 2L3 14h8l-1 4 10-12h-8l1-4z" fill="currentColor"/>
+            </svg>
+            Trending Movies
+          </h3>
+          <div class="trending-carousel" id="trendingCarousel">
+            <div class="trending-loading">Loading trending movies...</div>
+          </div>
         </div>
 
         <!-- Time Segments Section -->
@@ -246,7 +258,7 @@
               <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <input type="text" id="searchInput" placeholder="Search by title...">
-            <button class="clear-search" id="clearSearch" style="display: none;">×</button>
+            <button class="clear-search" id="clearSearch" style="display: none;">ï¿½</button>
           </div>
 
           <!-- Sort and Filter Row -->

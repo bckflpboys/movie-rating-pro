@@ -1,4 +1,4 @@
-// Rating categories and their IDs
+﻿// Rating categories and their IDs
 const ratingCategories = [
   'first30',
   'middleHour',
@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
   updateTotalScore();
   autoFillMovieTitle(); // Automatically detect and fill movie title
   loadCustomFields(); // Load and display custom fields
-  loadRatingCategorySettings(); // Load and apply rating category settings
+  loadRatingCategorySettings();
+  loadTrendingMovies(); // Load and apply rating category settings
 });
 
 // Automatically detect and fill the movie title from the active tab
@@ -1104,3 +1105,79 @@ function displayFilteredRatings() {
     });
   });
 }
+
+// TMDB API Configuration (Free API - no key needed for trending)
+const TMDB_API_KEY = 'YOUR_API_KEY_HERE'; // Users can get free key from themoviedb.org
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+
+// Load trending movies
+async function loadTrendingMovies() {
+  const carousel = document.getElementById('trendingCarousel');
+  if (!carousel) return;
+
+  try {
+    // Using a demo API key - users should get their own from themoviedb.org
+    const apiKey = '8265bd1679663a7ea12ac168da84d2e8'; // Demo key
+    const response = await fetch(`${TMDB_BASE_URL}/trending/movie/week?api_key=${apiKey}`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch trending movies');
+    }
+
+    const data = await response.json();
+    const movies = data.results.slice(0, 10); // Get top 10
+
+    if (movies.length === 0) {
+      carousel.innerHTML = '<div class="trending-error">No trending movies available</div>';
+      return;
+    }
+
+    carousel.innerHTML = movies.map(movie => `
+      <div class="trending-movie" data-movie-title="${escapeHtml(movie.title)}">
+        <div class="trending-poster">
+          ${movie.vote_average ? `
+            <div class="trending-rating">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 1l2.5 6.5L19 8.5l-5 5 1.5 6.5L10 17l-5.5 3.5L6 14l-5-5 6.5-1L10 1z"/>
+              </svg>
+              ${movie.vote_average.toFixed(1)}
+            </div>
+          ` : ''}
+          <img src="${movie.poster_path ? TMDB_IMAGE_BASE + movie.poster_path : 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'180\'%3E%3Crect fill=\'%23333\' width=\'120\' height=\'180\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23666\' font-size=\'14\'%3ENo Image%3C/text%3E%3C/svg%3E'}" 
+               alt="${escapeHtml(movie.title)}"
+               loading="lazy">
+        </div>
+        <div class="trending-movie-title">${escapeHtml(movie.title)}</div>
+      </div>
+    `).join('');
+
+    // Add click handlers to auto-fill movie title
+    carousel.querySelectorAll('.trending-movie').forEach(movieEl => {
+      movieEl.addEventListener('click', () => {
+        const title = movieEl.dataset.movieTitle;
+        const titleInput = document.getElementById('movieTitle');
+        if (titleInput) {
+          titleInput.value = title;
+          // Trigger animation
+          titleInput.style.transform = 'scale(1.02)';
+          setTimeout(() => {
+            titleInput.style.transform = 'scale(1)';
+          }, 200);
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    });
+
+  } catch (error) {
+    console.error('Error loading trending movies:', error);
+    carousel.innerHTML = '<div class="trending-error">Unable to load trending movies</div>';
+  }
+}
+
+// Call loadTrendingMovies when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  // ... existing code ...
+  loadTrendingMovies();
+});
