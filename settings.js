@@ -1,7 +1,21 @@
 // Default fields configuration
 const defaultFields = [
     { id: 'movieTitle', label: 'Movie Title', type: 'text', required: true },
-    { id: 'dateWatched', label: 'Date Watched', type: 'datetime-local', required: false }
+    { id: 'dateWatched', label: 'Date Watched', type: 'datetime-local', required: true }
+];
+
+// Default rating categories
+const defaultRatingCategories = [
+    { id: 'first30', label: 'First 30 Minutes', required: false },
+    { id: 'middleHour', label: 'Middle Hour', required: false },
+    { id: 'last30', label: 'Last 30 Minutes', required: false },
+    { id: 'sound', label: 'Sound Design', required: false },
+    { id: 'music', label: 'Music Score', required: false },
+    { id: 'quality', label: 'Visual Quality', required: false },
+    { id: 'directing', label: 'Directing', required: false },
+    { id: 'acting', label: 'Acting', required: false },
+    { id: 'screenplay', label: 'Screenplay', required: false },
+    { id: 'cinematography', label: 'Cinematography', required: false }
 ];
 
 // Field types available for custom fields
@@ -24,12 +38,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load settings from storage
 async function loadSettings() {
     try {
-        const result = await chrome.storage.local.get(['customFields', 'fieldSettings']);
+        const result = await chrome.storage.local.get(['customFields', 'ratingCategorySettings']);
         const customFields = result.customFields || [];
-        const fieldSettings = result.fieldSettings || {};
+        const ratingCategorySettings = result.ratingCategorySettings || {};
 
         // Populate default fields
-        populateDefaultFields(fieldSettings);
+        populateDefaultFields();
+
+        // Populate rating categories
+        populateRatingCategories(ratingCategorySettings);
 
         // Populate custom fields
         populateCustomFields(customFields);
@@ -40,14 +57,29 @@ async function loadSettings() {
 }
 
 // Populate default fields list
-function populateDefaultFields(fieldSettings) {
+function populateDefaultFields() {
     const container = document.getElementById('defaultFieldsList');
     container.innerHTML = '';
 
     defaultFields.forEach(field => {
-        const isEnabled = fieldSettings[field.id] !== false; // Default to enabled
-        const fieldItem = createDefaultFieldItem(field, isEnabled);
+        const fieldItem = createDefaultFieldItem(field, true); // Always enabled
         container.appendChild(fieldItem);
+    });
+}
+
+// Populate rating categories list
+function populateRatingCategories(ratingCategorySettings) {
+    const container = document.getElementById('ratingCategoriesList');
+    if (!container) {
+        console.error('Rating categories container not found');
+        return;
+    }
+    container.innerHTML = '';
+
+    defaultRatingCategories.forEach(category => {
+        const isEnabled = ratingCategorySettings[category.id] !== false; // Default to enabled
+        const categoryItem = createRatingCategoryItem(category, isEnabled);
+        container.appendChild(categoryItem);
     });
 }
 
@@ -76,6 +108,27 @@ function createDefaultFieldItem(field, isEnabled) {
         toggle.style.cursor = 'not-allowed';
         toggle.classList.add('active');
     }
+
+    return div;
+}
+
+// Create a rating category item
+function createRatingCategoryItem(category, isEnabled) {
+    const div = document.createElement('div');
+    div.className = 'field-item';
+    div.dataset.categoryId = category.id;
+
+    div.innerHTML = `
+    <span class="field-label">${category.label}</span>
+    <div style="flex: 1"></div>
+    <div class="toggle-switch ${isEnabled ? 'active' : ''}" data-category-id="${category.id}"></div>
+  `;
+
+    // Add toggle functionality
+    const toggle = div.querySelector('.toggle-switch');
+    toggle.addEventListener('click', () => {
+        toggle.classList.toggle('active');
+    });
 
     return div;
 }
@@ -167,13 +220,13 @@ function addCustomField() {
 // Save settings
 async function saveSettings() {
     try {
-        // Collect field settings for default fields
-        const fieldSettings = {};
-        document.querySelectorAll('#defaultFieldsList .field-item').forEach(item => {
-            const fieldId = item.dataset.fieldId;
+        // Collect rating category settings
+        const ratingCategorySettings = {};
+        document.querySelectorAll('#ratingCategoriesList .field-item').forEach(item => {
+            const categoryId = item.dataset.categoryId;
             const toggle = item.querySelector('.toggle-switch');
             const isEnabled = toggle.classList.contains('active');
-            fieldSettings[fieldId] = isEnabled;
+            ratingCategorySettings[categoryId] = isEnabled;
         });
 
         // Collect custom fields
@@ -202,7 +255,7 @@ async function saveSettings() {
         });
 
         // Save to storage
-        await chrome.storage.local.set({ customFields, fieldSettings });
+        await chrome.storage.local.set({ customFields, ratingCategorySettings });
 
         showNotification('Settings saved successfully!', 'success');
 

@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateTotalScore();
   autoFillMovieTitle(); // Automatically detect and fill movie title
   loadCustomFields(); // Load and display custom fields
+  loadRatingCategorySettings(); // Load and apply rating category settings
 });
 
 // Automatically detect and fill the movie title from the active tab
@@ -120,6 +121,50 @@ async function loadCustomFields() {
   } catch (error) {
     console.error('Error loading custom fields:', error);
   }
+}
+
+// Load and apply rating category settings
+async function loadRatingCategorySettings() {
+  try {
+    const result = await chrome.storage.local.get(['ratingCategorySettings']);
+    const ratingCategorySettings = result.ratingCategorySettings || {};
+
+    // Hide disabled rating categories
+    ratingCategories.forEach(category => {
+      const isEnabled = ratingCategorySettings[category] !== false; // Default to enabled
+      const ratingItem = document.getElementById(category)?.closest('.rating-item');
+
+      if (ratingItem) {
+        if (!isEnabled) {
+          ratingItem.style.display = 'none';
+        } else {
+          ratingItem.style.display = '';
+        }
+      }
+    });
+
+    // Hide sections if all their categories are disabled
+    hideSectionsIfEmpty();
+
+    console.log('Rating category settings applied');
+  } catch (error) {
+    console.error('Error loading rating category settings:', error);
+  }
+}
+
+// Hide sections if all rating items are hidden
+function hideSectionsIfEmpty() {
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(section => {
+    const ratingItems = section.querySelectorAll('.rating-item');
+    const visibleItems = Array.from(ratingItems).filter(item => item.style.display !== 'none');
+
+    if (ratingItems.length > 0 && visibleItems.length === 0) {
+      section.style.display = 'none';
+    } else {
+      section.style.display = '';
+    }
+  });
 }
 
 // Create a custom field element

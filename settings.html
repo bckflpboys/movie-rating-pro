@@ -129,7 +129,16 @@
             transition: background 0.3s;
         }
 
-        .field-item .toggle-switch.active {
+                .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+.field-item .toggle-switch.active {
             background: #8B5CF6;
         }
 
@@ -225,6 +234,37 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
+                .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: #8B5CF6 !important;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
         .default-badge {
             background: rgba(139, 92, 246, 0.2);
             color: #8B5CF6;
@@ -275,6 +315,20 @@
             <p>Enable or disable default fields that appear in the rating form.</p>
             <div class="field-list" id="defaultFieldsList">
                 <!-- Default fields will be populated here -->
+            </div>
+        
+        <!-- Rating Categories Section -->
+        <div class="settings-section">
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z" 
+                          stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                </svg>
+                Rating Categories
+            </h2>
+            <p>Enable or disable rating categories that appear in the rating form. All categories are optional.</p>
+            <div class="field-list" id="ratingCategoriesList">
+                <!-- Rating categories will be populated here -->
             </div>
         </div>
 
