@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Movie Rating Pro",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Rate movies by segments and categories with detailed scoring",
     "permissions": [
         "storage",
