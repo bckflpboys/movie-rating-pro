@@ -168,6 +168,7 @@ function createCustomFieldElement(field) {
       slider.addEventListener('input', (e) => {
         sliderValue.textContent = e.target.value;
         animateValueChange(sliderValue);
+        updateTotalScore(); // Update total score when custom slider changes
       });
 
       sliderContainer.appendChild(sliderHeader);
@@ -282,6 +283,7 @@ function updateTotalScore() {
   let total = 0;
   let count = 0;
 
+  // Add default rating categories
   ratingCategories.forEach(category => {
     const slider = document.getElementById(category);
     if (slider) {
@@ -290,7 +292,13 @@ function updateTotalScore() {
     }
   });
 
-  const average = total / count;
+  // Add custom slider ratings
+  document.querySelectorAll('.custom-field-section input[type="range"]').forEach(slider => {
+    total += parseInt(slider.value);
+    count++;
+  });
+
+  const average = count > 0 ? total / count : 0;
   const scoreElement = document.getElementById('totalScore');
   scoreElement.textContent = average.toFixed(1);
 
@@ -355,9 +363,20 @@ async function saveRating() {
     }
   });
 
-  // Calculate total score
-  const total = Object.values(ratings).reduce((sum, val) => sum + val, 0);
-  const average = total / ratingCategories.length;
+  // Calculate total score including custom sliders
+  let total = Object.values(ratings).reduce((sum, val) => sum + val, 0);
+  let count = ratingCategories.length;
+
+  // Add custom slider values to the total
+  for (const [fieldId, fieldValue] of Object.entries(customFieldValues)) {
+    const fieldDef = customFieldDefs.find(f => f.id === fieldId);
+    if (fieldDef && fieldDef.type === 'slider' && typeof fieldValue === 'number') {
+      total += fieldValue;
+      count++;
+    }
+  }
+
+  const average = count > 0 ? total / count : 0;
 
   // Create rating object
   const rating = {
