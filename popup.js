@@ -14,13 +14,14 @@ const ratingCategories = [
 
 // Initialize the extension
 document.addEventListener('DOMContentLoaded', () => {
+  initializeTrendingToggle();
   initializeSliders();
   setupEventListeners();
   updateTotalScore();
   autoFillMovieTitle(); // Automatically detect and fill movie title
   loadCustomFields(); // Load and display custom fields
   loadRatingCategorySettings();
-  loadTrendingMovies(); // Load and apply rating category settings
+  loadTrendingMovies();
 });
 
 // Automatically detect and fill the movie title from the active tab
@@ -1120,7 +1121,7 @@ async function loadTrendingMovies() {
     // Using a demo API key - users should get their own from themoviedb.org
     const apiKey = '8265bd1679663a7ea12ac168da84d2e8'; // Demo key
     const response = await fetch(`${TMDB_BASE_URL}/trending/movie/week?api_key=${apiKey}`);
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch trending movies');
     }
@@ -1179,11 +1180,7 @@ async function loadTrendingMovies() {
   }
 }
 
-// Call loadTrendingMovies when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  // ... existing code ...
-  loadTrendingMovies();
-});
+
 
 // Auto-scroll functionality for trending carousel
 let autoScrollInterval = null;
@@ -1202,7 +1199,7 @@ function startAutoScroll() {
   autoScrollInterval = setInterval(() => {
     if (!isScrolling && carousel) {
       carousel.scrollLeft += 1; // Scroll 1px at a time for smoothness
-      
+
       // Reset to beginning when reaching the end
       if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
         carousel.scrollLeft = 0;
@@ -1237,5 +1234,31 @@ function stopAutoScroll() {
   if (autoScrollInterval) {
     clearInterval(autoScrollInterval);
     autoScrollInterval = null;
+  }
+}
+
+// Toggle trending section
+function initializeTrendingToggle() {
+  const toggleBtn = document.getElementById('trendingToggle');
+  const trendingSection = document.querySelector('.trending-section');
+
+  if (toggleBtn && trendingSection) {
+    // Remove existing listeners by cloning
+    const newBtn = toggleBtn.cloneNode(true);
+    toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
+
+    newBtn.addEventListener('click', () => {
+      trendingSection.classList.toggle('collapsed');
+
+      // Stop auto-scroll when collapsed
+      if (trendingSection.classList.contains('collapsed')) {
+        stopAutoScroll();
+      } else {
+        // Restart auto-scroll when expanded
+        setTimeout(() => {
+          startAutoScroll();
+        }, 400); // Wait for animation to complete
+      }
+    });
   }
 }

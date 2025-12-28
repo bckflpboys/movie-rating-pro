@@ -1192,3 +1192,52 @@ body {
 .trending-carousel.manual-scroll {
   scroll-behavior: smooth; /* Enable smooth for manual scroll */
 }
+
+/* Collapsible Trending Section */
+.trending-title {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-right: 30px;
+}
+
+.trending-title:hover {
+  color: #8B5CF6;
+}
+
+.trending-title .toggle-icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 0.3s ease;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.trending-section.collapsed .toggle-icon {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.trending-section .trending-carousel {
+  max-height: 250px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+  margin-top: 12px;
+}
+
+.trending-section.collapsed .trending-carousel {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  pointer-events: none;
+}
+
+.trending-section {
+  transition: padding 0.3s ease;
+}
+
+.trending-section.collapsed {
+  padding: 12px 16px;
+}
