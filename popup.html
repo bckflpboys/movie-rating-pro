@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -87,6 +87,23 @@
             <input type="text" id="movieTitle" class="movie-title-input"
               placeholder="Auto-detected or enter manually...">
             <button class="refresh-title-btn" id="refreshTitleBtn" title="Refresh movie title">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">                <path
+                  d="M15 9C15 12.3137 12.3137 15 9 15C5.68629 15 3 12.3137 3 9C3 5.68629 5.68629 3 9 3C10.8885 3 12.5698 3.8954 13.6475 5.28125"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M13 2V5.5H9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Genre Input -->
+        <div class="movie-title-section">
+          <label for="movieGenre" class="section-label">Genre</label>
+          <div class="movie-title-input-wrapper">
+            <input type="text" id="movieGenre" class="movie-title-input"
+              placeholder="Auto-detected or enter manually...">
+            <button class="refresh-title-btn" id="refreshGenreBtn" title="Refresh genre">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path
                   d="M15 9C15 12.3137 12.3137 15 9 15C5.68629 15 3 12.3137 3 9C3 5.68629 5.68629 3 9 3C10.8885 3 12.5698 3.8954 13.6475 5.28125"
@@ -122,247 +139,247 @@
         </div>
 
         <!-- Time Segments Section -->
-        <div class="section">
-          <h2 class="section-title">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" />
-              <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-            Time Segments
-          </h2>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">First 30 Minutes</span>
-              <span class="rating-value" id="first30Value">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="first30" data-category="first30">
-          </div>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Middle Hour</span>
-              <span class="rating-value" id="middleHourValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="middleHour"
-              data-category="middleHour">
-          </div>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Last 30 Minutes</span>
-              <span class="rating-value" id="last30Value">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="last30" data-category="last30">
-          </div>
-        </div>
-
-        <!-- Production Quality Section -->
-        <div class="section">
-          <h2 class="section-title">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="2" />
-              <path d="M18 8L20 6V14L18 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            Production Quality
-          </h2>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Sound Design</span>
-              <span class="rating-value" id="soundValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="sound" data-category="sound">
-          </div>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Music Score</span>
-              <span class="rating-value" id="musicValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="music" data-category="music">
-          </div>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Visual Quality</span>
-              <span class="rating-value" id="qualityValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="quality" data-category="quality">
-          </div>
-        </div>
-
-        <!-- Creative Aspects Section -->
-        <div class="section">
-          <h2 class="section-title">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z"
-                stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-            </svg>
-            Creative Aspects
-          </h2>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Directing</span>
-              <span class="rating-value" id="directingValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="directing"
-              data-category="directing">
-          </div>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Acting</span>
-              <span class="rating-value" id="actingValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="acting" data-category="acting">
-          </div>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Screenplay</span>
-              <span class="rating-value" id="screenplayValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="screenplay"
-              data-category="screenplay">
-          </div>
-
-          <div class="rating-item">
-            <div class="rating-header">
-              <span class="rating-label">Cinematography</span>
-              <span class="rating-value" id="cinematographyValue">5</span>
-            </div>
-            <input type="range" min="1" max="10" value="5" class="rating-slider" id="cinematography"
-              data-category="cinematography">
-          </div>
-        </div>
-
-        <!-- Overall Score Display -->
-        <div class="score-section">
-          <div class="score-card">
-            <div class="stars" id="starsDisplay">
-              <svg class="star" viewBox="0 0 24 24">
-                <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
+          <div class="section">
+            <h2 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" />
+                <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               </svg>
-              <svg class="star" viewBox="0 0 24 24">
-                <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
-              </svg>
-              <svg class="star" viewBox="0 0 24 24">
-                <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
-              </svg>
-              <svg class="star" viewBox="0 0 24 24">
-                <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
-              </svg>
-              <svg class="star" viewBox="0 0 24 24">
-                <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
-              </svg>
+              Time Segments
+            </h2>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">First 30 Minutes</span>
+                <span class="rating-value" id="first30Value">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="first30" data-category="first30">
             </div>
-            <div class="score-display">
-              <span class="score-number" id="totalScore">5.0</span>
-              <span class="score-label">/ 10</span>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Middle Hour</span>
+                <span class="rating-value" id="middleHourValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="middleHour"
+                data-category="middleHour">
             </div>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Last 30 Minutes</span>
+                <span class="rating-value" id="last30Value">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="last30" data-category="last30">
+            </div>
+          </div>
+
+          <!-- Production Quality Section -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+                <path d="M18 8L20 6V14L18 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Production Quality
+            </h2>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Sound Design</span>
+                <span class="rating-value" id="soundValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="sound" data-category="sound">
+            </div>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Music Score</span>
+                <span class="rating-value" id="musicValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="music" data-category="music">
+            </div>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Visual Quality</span>
+                <span class="rating-value" id="qualityValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="quality" data-category="quality">
+            </div>
+          </div>
+
+          <!-- Creative Aspects Section -->
+          <div class="section">
+            <h2 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 2L12.5 7.5L18 8.5L14 12.5L15 18L10 15.5L5 18L6 12.5L2 8.5L7.5 7.5L10 2Z"
+                  stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+              </svg>
+              Creative Aspects
+            </h2>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Directing</span>
+                <span class="rating-value" id="directingValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="directing"
+                data-category="directing">
+            </div>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Acting</span>
+                <span class="rating-value" id="actingValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="acting" data-category="acting">
+            </div>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Screenplay</span>
+                <span class="rating-value" id="screenplayValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="screenplay"
+                data-category="screenplay">
+            </div>
+
+            <div class="rating-item">
+              <div class="rating-header">
+                <span class="rating-label">Cinematography</span>
+                <span class="rating-value" id="cinematographyValue">5</span>
+              </div>
+              <input type="range" min="1" max="10" value="5" class="rating-slider" id="cinematography"
+                data-category="cinematography">
+            </div>
+          </div>
+
+          <!-- Overall Score Display -->
+          <div class="score-section">
+            <div class="score-card">
+              <div class="stars" id="starsDisplay">
+                <svg class="star" viewBox="0 0 24 24">
+                  <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
+                </svg>
+                <svg class="star" viewBox="0 0 24 24">
+                  <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
+                </svg>
+                <svg class="star" viewBox="0 0 24 24">
+                  <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
+                </svg>
+                <svg class="star" viewBox="0 0 24 24">
+                  <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
+                </svg>
+                <svg class="star" viewBox="0 0 24 24">
+                  <path d="M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9L12 2Z" />
+                </svg>
+              </div>
+              <div class="score-display">
+                <span class="score-number" id="totalScore">5.0</span>
+                <span class="score-label">/ 10</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn btn-secondary" id="resetBtn">Reset</button>
+            <button class="btn btn-primary" id="saveBtn">Save Rating</button>
           </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-          <button class="btn btn-secondary" id="resetBtn">Reset</button>
-          <button class="btn btn-primary" id="saveBtn">Save Rating</button>
-        </div>
-      </div>
-
-      <!-- Saved Ratings View -->
-      <div class="saved-ratings hidden" id="savedRatings">
-        <div class="saved-header">
-          <button class="back-btn" id="backBtn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            Back
-          </button>
-          <h2>Saved Ratings</h2>
-        </div>
-        <!-- Search and Filter Controls -->
-        <div class="search-filter-container">
-          <!-- Search Bar -->
-          <div class="search-bar">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-              <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <input type="text" id="searchInput" placeholder="Search by title...">
-            <button class="clear-search" id="clearSearch" style="display: none;">�</button>
+        <!-- Saved Ratings View -->
+        <div class="saved-ratings hidden" id="savedRatings">
+          <div class="saved-header">
+            <button class="back-btn" id="backBtn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Back
+            </button>
+            <h2>Saved Ratings</h2>
           </div>
-
-          <!-- Sort and Filter Row -->
-          <div class="filter-controls">
-            <select id="sortSelect" class="filter-select">
-              <option value="date-desc">Newest First</option>
-              <option value="date-asc">Oldest First</option>
-              <option value="score-desc">Highest Score</option>
-              <option value="score-asc">Lowest Score</option>
-              <option value="title-asc">Title (A-Z)</option>
-              <option value="title-desc">Title (Z-A)</option>
-            </select>
-
-            <select id="scoreFilter" class="filter-select">
-              <option value="all">All Scores</option>
-              <option value="9-10">9-10 (Excellent)</option>
-              <option value="7-8">7-8 (Good)</option>
-              <option value="5-6">5-6 (Average)</option>
-              <option value="1-4">1-4 (Poor)</option>
-            </select>
-
-            <button class="filter-toggle-btn" id="filterToggleBtn">
+          <!-- Search and Filter Controls -->
+          <div class="search-filter-container">
+            <!-- Search Bar -->
+            <div class="search-bar">
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path d="M4 6h12M6 10h8M8 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-              Filters
+              <input type="text" id="searchInput" placeholder="Search by title...">
+              <button class="clear-search" id="clearSearch" style="display: none;">?</button>
+            </div>
+
+            <!-- Sort and Filter Row -->
+            <div class="filter-controls">
+              <select id="sortSelect" class="filter-select">
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="score-desc">Highest Score</option>
+                <option value="score-asc">Lowest Score</option>
+                <option value="title-asc">Title (A-Z)</option>
+                <option value="title-desc">Title (Z-A)</option>
+              </select>
+
+              <select id="scoreFilter" class="filter-select">
+                <option value="all">All Scores</option>
+                <option value="9-10">9-10 (Excellent)</option>
+                <option value="7-8">7-8 (Good)</option>
+                <option value="5-6">5-6 (Average)</option>
+                <option value="1-4">1-4 (Poor)</option>
+              </select>
+
+              <button class="filter-toggle-btn" id="filterToggleBtn">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 6h12M6 10h8M8 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                Filters
+              </button>
+            </div>
+
+            <!-- Advanced Filters -->
+            <div class="advanced-filters hidden" id="advancedFilters">
+              <div class="filter-row">
+                <label>Date Range:</label>
+                <input type="date" id="dateFrom" class="date-input">
+                <span>to</span>
+                <input type="date" id="dateTo" class="date-input">
+              </div>
+              <div class="filter-actions">
+                <button class="btn-secondary" id="clearFilters">Clear Filters</button>
+                <button class="btn-primary" id="applyFilters">Apply</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results Count -->
+          <div class="results-count" id="resultsCount">
+            <span id="resultText">Loading...</span>
+          </div>
+          <div class="ratings-list" id="ratingsList">
+            <!-- Ratings will be dynamically inserted here -->
+          </div>
+        </div>
+
+        <!-- Rating Detail View -->
+        <div class="rating-detail-view hidden" id="ratingDetailView">
+          <div class="saved-header">
+            <button class="back-btn" id="backToListBtn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Back to List
             </button>
           </div>
-
-          <!-- Advanced Filters -->
-          <div class="advanced-filters hidden" id="advancedFilters">
-            <div class="filter-row">
-              <label>Date Range:</label>
-              <input type="date" id="dateFrom" class="date-input">
-              <span>to</span>
-              <input type="date" id="dateTo" class="date-input">
-            </div>
-            <div class="filter-actions">
-              <button class="btn-secondary" id="clearFilters">Clear Filters</button>
-              <button class="btn-primary" id="applyFilters">Apply</button>
-            </div>
+          <div id="ratingDetailContent">
+            <!-- Detail content will be dynamically inserted here -->
           </div>
         </div>
-
-        <!-- Results Count -->
-        <div class="results-count" id="resultsCount">
-          <span id="resultText">Loading...</span>
-        </div>
-        <div class="ratings-list" id="ratingsList">
-          <!-- Ratings will be dynamically inserted here -->
-        </div>
-      </div>
-
-      <!-- Rating Detail View -->
-      <div class="rating-detail-view hidden" id="ratingDetailView">
-        <div class="saved-header">
-          <button class="back-btn" id="backToListBtn">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            Back to List
-          </button>
-        </div>
-        <div id="ratingDetailContent">
-          <!-- Detail content will be dynamically inserted here -->
-        </div>
-      </div>
     </main>
 
     <!-- Footer -->
