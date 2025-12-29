@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   updateTotalScore();
   autoFillMovieTitle(); // Automatically detect and fill movie title
+  autoFillMovieGenre(); // Automatically detect and fill movie genre
   loadCustomFields(); // Load and display custom fields
   loadRatingCategorySettings();
   loadTrendingMovies();
@@ -88,6 +89,51 @@ async function autoFillMovieTitle(force = false) {
     console.error('Error auto-filling movie title:', error);
     if (force) {
       showNotification('Error detecting movie title', 'error');
+    }
+  }
+}
+
+// Automatically detect and fill the movie genre from the active tab
+async function autoFillMovieGenre(force = false) {
+  try {
+    // Get the active tab
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+    if (!tab || !tab.id) {
+      console.log('No active tab found');
+      return;
+    }
+
+    // Send message to content script to get the movie genre
+    chrome.tabs.sendMessage(tab.id, { action: 'getMovieGenre' }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.log('Could not detect movie genre:', chrome.runtime.lastError.message);
+        return;
+      }
+
+      if (response && response.genre) {
+        const movieGenreInput = document.getElementById('movieGenre');
+
+        // Only fill if empty or if forced (manual refresh)
+        if (movieGenreInput && (!movieGenreInput.value || force)) {
+          movieGenreInput.value = response.genre;
+
+          // Add a subtle animation to show the genre was auto-filled
+          movieGenreInput.style.backgroundColor = '#10B98120';
+          setTimeout(() => {
+            movieGenreInput.style.backgroundColor = '';
+          }, 1000);
+
+          console.log('Auto-filled movie genre:', response.genre);
+        }
+      } else if (force) {
+        showNotification('Could not detect movie genre on this page', 'error');
+      }
+    });
+  } catch (error) {
+    console.error('Error auto-filling movie genre:', error);
+    if (force) {
+      showNotification('Error detecting movie genre', 'error');
     }
   }
 }
@@ -316,6 +362,16 @@ function setupEventListeners() {
     }, 1000);
   });
 
+  // Refresh genre button
+  document.getElementById('refreshGenreBtn').addEventListener('click', () => {
+    const btn = document.getElementById('refreshGenreBtn');
+    btn.classList.add('spinning');
+    autoFillMovieGenre(true); // Force refresh
+    setTimeout(() => {
+      btn.classList.remove('spinning');
+    }, 1000);
+  });
+
   // Quick action buttons
   document.getElementById('quickHistoryBtn').addEventListener('click', showSavedRatings);
 
@@ -382,6 +438,7 @@ function updateStarsDisplay(score) {
 // Save rating to Chrome storage
 async function saveRating() {
   const movieTitle = document.getElementById('movieTitle').value.trim();
+  const movieGenre = document.getElementById('movieGenre').value.trim();
   const dateWatched = document.getElementById('dateWatched').value;
 
   if (!movieTitle) {
@@ -438,6 +495,7 @@ async function saveRating() {
   const rating = {
     id: Date.now(),
     movieTitle,
+    movieGenre,
     ratings,
     customFields: customFieldValues, // Add custom field values
     totalScore: parseFloat(average.toFixed(1)),
@@ -470,6 +528,7 @@ async function saveRating() {
 // Reset form to default values
 function resetForm() {
   document.getElementById('movieTitle').value = '';
+  document.getElementById('movieGenre').value = '';
   document.getElementById('dateWatched').value = '';
 
   // Reset custom fields
@@ -581,6 +640,7 @@ function createRatingCard(rating) {
       <div class="rating-card-header">
         <div>
           <div class="rating-card-title">${escapeHtml(rating.movieTitle)}</div>
+          ${rating.movieGenre ? `<div class="rating-card-genre" style="font-size: 0.85em; color: #9CA3AF; margin-top: 2px;">${escapeHtml(rating.movieGenre)}</div>` : ''}
           <div class="rating-card-date">${formattedDate}</div>
         </div>
         <div class="rating-card-score">
@@ -806,6 +866,7 @@ async function showRatingDetail(rating) {
   detailContent.innerHTML = `
     <div class="detail-header">
       <h2 class="detail-title">${escapeHtml(rating.movieTitle)}</h2>
+      ${rating.movieGenre ? `<p class="detail-genre" style="font-size: 1em; color: #9CA3AF; margin: 4px 0 8px 0;">${escapeHtml(rating.movieGenre)}</p>` : ''}
       <p class="detail-date">${formattedDate}</p>
     </div>
     
@@ -1319,7 +1380,7 @@ async function exportRatingsToCSV() {
     movieRatings.forEach(rating => {
       const row = [
         rating.movieTitle || '',
-        '', // Genre - not tracked, empty
+        rating.movieGenre || '', // Genre - now tracked and exported!
         rating.ratings.quality || '',
         rating.ratings.sound || '',
         rating.ratings.screenplay || '',
