@@ -17,3 +17,5 @@ npm-debug.log*
 # Temporary files
 *.tmp
 *.temp
+resize-icons.ps1
+create-icons.ps1
