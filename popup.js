@@ -13,15 +13,26 @@ const ratingCategories = [
 ];
 
 // Initialize the extension
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize the extension
+document.addEventListener('DOMContentLoaded', async () => {
   initializeTrendingToggle();
   initializeSliders();
   setupEventListeners();
+
+  // Load settings and custom fields first
+  await loadCustomFields(); // Load and display custom fields
+  await loadRatingCategorySettings();
+
+  // Try to restore draft
+  const draftRestored = await restoreDraftState();
+
   updateTotalScore();
+
+  // Only autofill if we didn't restore a title/genre from draft
+  // The autoFill functions check if the field is empty, so this works naturally
   autoFillMovieTitle(); // Automatically detect and fill movie title
   autoFillMovieGenre(); // Automatically detect and fill movie genre
-  loadCustomFields(); // Load and display custom fields
-  loadRatingCategorySettings();
+
   loadTrendingMovies();
 });
 
@@ -280,7 +291,10 @@ function createCustomFieldElement(field) {
       slider.addEventListener('input', (e) => {
         sliderValue.textContent = e.target.value;
         animateValueChange(sliderValue);
+        sliderValue.textContent = e.target.value;
+        animateValueChange(sliderValue);
         updateTotalScore(); // Update total score when custom slider changes
+        saveDraftState(); // Save draft
       });
 
       sliderContainer.appendChild(sliderHeader);
@@ -320,6 +334,12 @@ function createCustomFieldElement(field) {
       input.className = 'movie-title-input';
   }
 
+  // Add listener for non-slider inputs
+  if (input.type !== 'range') {
+    input.addEventListener('input', saveDraftState);
+    input.addEventListener('change', saveDraftState);
+  }
+
   input.id = field.id;
   input.placeholder = field.placeholder || `Enter ${field.label.toLowerCase()}...`;
 
@@ -342,8 +362,10 @@ function initializeSliders() {
       // Add input event listener
       slider.addEventListener('input', (e) => {
         valueDisplay.textContent = e.target.value;
+        valueDisplay.textContent = e.target.value;
         updateTotalScore();
         animateValueChange(valueDisplay);
+        saveDraftState(); // Save draft
       });
     }
   });
@@ -399,6 +421,15 @@ function setupEventListeners() {
   });
 
   document.getElementById('exportBtn').addEventListener('click', exportRatingsToCSV);
+
+  // Add listeners for main inputs
+  ['movieTitle', 'movieGenre', 'dateWatched'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', saveDraftState);
+      el.addEventListener('change', saveDraftState);
+    }
+  });
 }
 
 // Animate value change
@@ -534,6 +565,9 @@ async function saveRating() {
     showNotification('Rating saved successfully!', 'success');
     animateSuccess();
 
+    // Clear draft
+    await chrome.storage.local.remove('currentDraft');
+
     // Reset form after short delay
     setTimeout(() => {
       resetForm();
@@ -580,6 +614,94 @@ function resetForm() {
   });
 
   updateTotalScore();
+
+  // Clear draft
+  chrome.storage.local.remove('currentDraft');
+}
+
+// Save current state as draft
+async function saveDraftState() {
+  const movieTitle = document.getElementById('movieTitle').value;
+  const movieGenre = document.getElementById('movieGenre').value;
+  const dateWatched = document.getElementById('dateWatched').value;
+
+  const ratings = {};
+  ratingCategories.forEach(category => {
+    const slider = document.getElementById(category);
+    if (slider) {
+      ratings[category] = slider.value;
+    }
+  });
+
+  const customFields = {};
+  document.querySelectorAll('.custom-field-section').forEach(section => {
+    const fieldId = section.dataset.fieldId;
+    const input = section.querySelector('input, textarea, select');
+    if (input && fieldId) {
+      customFields[fieldId] = input.value;
+    }
+  });
+
+  const draft = {
+    movieTitle,
+    movieGenre,
+    dateWatched,
+    ratings,
+    customFields,
+    timestamp: Date.now()
+  };
+
+  await chrome.storage.local.set({ currentDraft: draft });
+}
+
+// Restore draft state
+async function restoreDraftState() {
+  try {
+    const result = await chrome.storage.local.get(['currentDraft']);
+    const draft = result.currentDraft;
+
+    if (!draft) return false;
+
+    // Restore main fields
+    if (draft.movieTitle) document.getElementById('movieTitle').value = draft.movieTitle;
+    if (draft.movieGenre) document.getElementById('movieGenre').value = draft.movieGenre;
+    if (draft.dateWatched) document.getElementById('dateWatched').value = draft.dateWatched;
+
+    // Restore standard ratings
+    if (draft.ratings) {
+      Object.entries(draft.ratings).forEach(([category, value]) => {
+        const slider = document.getElementById(category);
+        const valueDisplay = document.getElementById(`${category}Value`);
+        if (slider) {
+          slider.value = value;
+          if (valueDisplay) valueDisplay.textContent = value;
+        }
+      });
+    }
+
+    // Restore custom fields
+    if (draft.customFields) {
+      Object.entries(draft.customFields).forEach(([fieldId, value]) => {
+        const section = document.querySelector(`.custom-field-section[data-field-id="${fieldId}"]`);
+        if (section) {
+          const input = section.querySelector('input, textarea, select');
+          if (input) {
+            input.value = value;
+            // If it's a slider, update display
+            if (input.type === 'range') {
+              const valueDisplay = document.getElementById(`${fieldId}Value`);
+              if (valueDisplay) valueDisplay.textContent = value;
+            }
+          }
+        }
+      });
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error restoring draft:', error);
+    return false;
+  }
 }
 
 // Show saved ratings view
