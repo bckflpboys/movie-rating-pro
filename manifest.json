@@ -5,18 +5,8 @@
     "description": "Rate movies by segments and categories with detailed scoring",
     "permissions": [
         "storage",
-        "activeTab"
-    ],
-    "content_scripts": [
-        {
-            "matches": [
-                "<all_urls>"
-            ],
-            "js": [
-                "content.js"
-            ],
-            "run_at": "document_idle"
-        }
+        "activeTab",
+        "scripting"
     ],
     "action": {
         "default_popup": "popup.html",

@@ -25,6 +25,19 @@ document.addEventListener('DOMContentLoaded', () => {
   loadTrendingMovies();
 });
 
+// Helper to inject content script
+async function injectContentScript(tabId) {
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      files: ['content.js']
+    });
+  } catch (error) {
+    // Script might already be injected or we don't have permission
+    console.log('Script injection info:', error);
+  }
+}
+
 // Automatically detect and fill the movie title from the active tab
 async function autoFillMovieTitle(force = false) {
   try {
@@ -35,6 +48,9 @@ async function autoFillMovieTitle(force = false) {
       console.log('No active tab found');
       return;
     }
+
+    // Inject content script
+    await injectContentScript(tab.id);
 
     // Send message to content script to get the movie title
     chrome.tabs.sendMessage(tab.id, { action: 'getMovieTitle' }, (response) => {
@@ -103,6 +119,9 @@ async function autoFillMovieGenre(force = false) {
       console.log('No active tab found');
       return;
     }
+
+    // Inject content script
+    await injectContentScript(tab.id);
 
     // Send message to content script to get the movie genre
     chrome.tabs.sendMessage(tab.id, { action: 'getMovieGenre' }, (response) => {
